@@ -168,6 +168,7 @@ _deps
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 # User-specific stuff
+.DS_Store
 
 # AWS User-specific
 
@@ -260,4 +261,3 @@ _deps
 # Editor-based Rest Client
 
 # Android studio 3.1+ serialized cache file
-
