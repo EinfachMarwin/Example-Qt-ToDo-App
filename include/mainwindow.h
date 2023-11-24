@@ -6,8 +6,14 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QFrame>
+#include <QLabel>
+#include <QHBoxLayout>
+#include <QPushButton>
+#include <QPixmap>
 #include <QObject>
 #include <QDebug>
+#include <QDesktopServices>
 
 namespace Ui {
     class MainWindow;
@@ -19,6 +25,11 @@ class MainWindow : public QMainWindow {
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
+
+public slots:
+    static void onSettingsButtonClicked();
+    static void onHelpButtonClicked();
+    static void onTasksButtonClicked();
 
 private:
     Ui::MainWindow *ui;
