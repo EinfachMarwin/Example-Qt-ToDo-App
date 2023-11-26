@@ -14,10 +14,10 @@ int main(int argc, char* argv[]) {
     w.show();
 
     // Set the application icon
-    QApplication::setWindowIcon(QIcon("../res/images/LogoToDoAppTransparent.png"));
+    QApplication::setWindowIcon(QIcon(":res/images/LogoToDoAppTransparent.png"));
 
     // Create a database manager
-    DbManager dbManager("../ToDoApp.db");
+    DbManager dbManager("ToDoApp.db");
 
     return app.exec();
 }

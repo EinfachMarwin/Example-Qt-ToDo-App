@@ -2,7 +2,7 @@
 // Created by Marwin Nowak on 26.11.23.
 //
 
-#include "settingswindow.h"
+#include "windows/settingswindow.h"
 
 SettingsWindow::SettingsWindow(QWindow *parent) : QWindow(parent) {
 
@@ -12,4 +12,4 @@ SettingsWindow::~SettingsWindow() {
 }
 
 // IMPORTANT: Do not delete the following line; otherwise, the program will crash.
-#include "moc_settingswindow.cpp"
+#include "windows/moc_settingswindow.cpp"

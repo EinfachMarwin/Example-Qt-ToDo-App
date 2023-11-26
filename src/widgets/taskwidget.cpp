@@ -2,7 +2,7 @@
 // Created by Marwin Nowak on 26.11.23.
 //
 
-#include "taskwidget.h"
+#include "widgets/taskwidget.h"
 
 
 
@@ -15,4 +15,4 @@ TaskWidget::~TaskWidget() {
 }
 
 // IMPORTANT: Do not delete the following line; otherwise, the program will crash.
-#include "moc_taskwidget.cpp"
+#include "widgets/moc_taskwidget.cpp"

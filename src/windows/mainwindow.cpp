@@ -2,7 +2,7 @@
 // Created by Marwin Nowak on 18.11.23.
 //
 
-#include "mainwindow.h"
+#include "windows/mainwindow.h"
 #include "dbmanager.h"
 
 // Constructor for the main window
@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     //TODO Error handling for Image loading
     //TODO recheck if hardcoded paths are necessary
     // Create a label for the logo in the sidebar
-    const QPixmap appLogo("../res/images/LogoToDoAppTransparent.png");
+    const QPixmap appLogo(":res/images/LogoToDoAppTransparent.png");
     const QPixmap scaledAppLogo = appLogo.scaled(48, 48, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     auto *logoLabel = new QLabel(this);
     logoLabel->setGeometry(QRect(0, 0, 48, 48));
@@ -48,7 +48,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     // Create a button for the Tasks Window in the sidebar
     auto *tasksButton = new QPushButton(this);
     tasksButton->setStyleSheet("border: none; background-color: #1e1f26;");
-    tasksButton->setIcon(QIcon("../res/images/TasksListIcon.png"));
+    tasksButton->setIcon(QIcon(":res/images/TasksListIcon.png"));
     tasksButton->setToolTip("Tasks");
     tasksButton->setIconSize(QSize(32, 32));
     tasksButton->setGeometry(QRect(9, 9, 32, 32));
@@ -59,7 +59,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     // Ceate a help button in the sidebar
     auto *helpButton = new QPushButton(this);
     helpButton->setStyleSheet("border: none; background-color: #1e1f26;");
-    helpButton->setIcon(QIcon("../res/images/HelpIcon.png"));
+    helpButton->setIcon(QIcon(":res/images/HelpIcon.png"));
     helpButton->setToolTip("Help");
     helpButton->setIconSize(QSize(32, 32));
     helpButton->setGeometry(QRect(9, 9, 32, 32));
@@ -68,7 +68,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     // Create a settings button in the sidebar
     auto *settingsButton = new QPushButton(this);
     settingsButton->setStyleSheet("border: none; background-color: #1e1f26;");
-    settingsButton->setIcon(QIcon("../res/images/SettingsIcon.png"));
+    settingsButton->setIcon(QIcon(":res/images/SettingsIcon.png"));
     settingsButton->setToolTip("Settings");
     settingsButton->setIconSize(QSize(32, 32));
     settingsButton->setGeometry(QRect(9, 9, 32, 32));
@@ -103,4 +103,4 @@ MainWindow::~MainWindow() {
 }
 
 // IMPORTANT: Do not delete the following line; otherwise, the program will crash.
-#include "moc_mainwindow.cpp"
+#include "windows/moc_mainwindow.cpp"
