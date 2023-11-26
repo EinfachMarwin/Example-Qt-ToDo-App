@@ -18,11 +18,18 @@ find_package(Qt6 COMPONENTS
 qt_standard_project_setup()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/widgets)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/windows)
 
 add_executable(ToDo
         src/main.cpp
-        src/mainwindow.cpp
         src/dbmanager.cpp
+
+        src/windows/mainwindow.cpp
+        src/windows/settingswindow.cpp
+
+        src/widgets/taskwidget.cpp
+        src/widgets/listwidget.cpp
 )
 
 target_link_libraries(ToDo

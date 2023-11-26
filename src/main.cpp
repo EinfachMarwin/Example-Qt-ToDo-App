@@ -2,10 +2,8 @@
 // Created by Marwin Nowak on 18.11.23.
 //
 
-#include <QApplication>
-#include <QIcon>
-#include "../include/mainwindow.h"
-#include "../include/dbmanager.h"
+#include "windows/mainwindow.h"
+#include "dbmanager.h"
 
 // Function initializes the Application
 int main(int argc, char* argv[]) {
@@ -16,10 +14,10 @@ int main(int argc, char* argv[]) {
     w.show();
 
     // Set the application icon
-    app.setWindowIcon(QIcon("../res/images/LogoToDoAppTransparent.png"));
+    QApplication::setWindowIcon(QIcon("../res/images/LogoToDoAppTransparent.png"));
 
     // Create a database manager
-    DbManager dbManager("todo.db");
+    DbManager dbManager("../ToDoApp.db");
 
     return app.exec();
 }

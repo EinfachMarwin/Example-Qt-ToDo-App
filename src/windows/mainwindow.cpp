@@ -3,13 +3,10 @@
 //
 
 #include "mainwindow.h"
-#include "ui_MainWindow.h"
-#include "../include/dbmanager.h"
+#include "dbmanager.h"
 
 // Constructor for the main window
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
-    // Setup the main window
-    ui->setupUi(this);
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     setWindowTitle("ToDo List");
 
     // Create a central widget
@@ -33,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     auto *sidebarLayout = new QVBoxLayout(sidebarWidget);
     sidebarLayout->setContentsMargins(2, 2, 2, 15);
 
+    //TODO Change appearance of the tooltips
     //TODO Error handling for Image loading
     //TODO recheck if hardcoded paths are necessary
     // Create a label for the logo in the sidebar
@@ -44,20 +42,25 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     sidebarLayout->addWidget(logoLabel);
     sidebarLayout->setAlignment(logoLabel, Qt::AlignTop);
 
+    //TODO add hover effect to the buttons
+    //TODO add click effect to the buttons
     //TODO move task button directly under the logo
     // Create a button for the Tasks Window in the sidebar
     auto *tasksButton = new QPushButton(this);
     tasksButton->setStyleSheet("border: none; background-color: #1e1f26;");
     tasksButton->setIcon(QIcon("../res/images/TasksListIcon.png"));
+    tasksButton->setToolTip("Tasks");
     tasksButton->setIconSize(QSize(32, 32));
     tasksButton->setGeometry(QRect(9, 9, 32, 32));
     sidebarLayout->addWidget(tasksButton);
+    sidebarLayout->addStretch();
     sidebarLayout->setAlignment(tasksButton, Qt::AlignTop);
 
     // Ceate a help button in the sidebar
     auto *helpButton = new QPushButton(this);
     helpButton->setStyleSheet("border: none; background-color: #1e1f26;");
     helpButton->setIcon(QIcon("../res/images/HelpIcon.png"));
+    helpButton->setToolTip("Help");
     helpButton->setIconSize(QSize(32, 32));
     helpButton->setGeometry(QRect(9, 9, 32, 32));
     sidebarLayout->addWidget(helpButton);
@@ -66,6 +69,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     auto *settingsButton = new QPushButton(this);
     settingsButton->setStyleSheet("border: none; background-color: #1e1f26;");
     settingsButton->setIcon(QIcon("../res/images/SettingsIcon.png"));
+    settingsButton->setToolTip("Settings");
     settingsButton->setIconSize(QSize(32, 32));
     settingsButton->setGeometry(QRect(9, 9, 32, 32));
     sidebarLayout->addWidget(settingsButton);
@@ -96,7 +100,6 @@ void MainWindow::onTasksButtonClicked() {
 
 // Destructor for the main window
 MainWindow::~MainWindow() {
-    delete ui;
 }
 
 // IMPORTANT: Do not delete the following line; otherwise, the program will crash.

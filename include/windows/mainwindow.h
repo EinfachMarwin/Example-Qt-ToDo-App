@@ -9,15 +9,15 @@
 #include <QFrame>
 #include <QLabel>
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QPushButton>
+#include <QSpacerItem>
 #include <QPixmap>
-#include <QObject>
-#include <QDebug>
-#include <QDesktopServices>
+#include <QIcon>
+#include <QApplication>
 
-namespace Ui {
-    class MainWindow;
-}
+
+#include <QDesktopServices>
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -32,7 +32,6 @@ public slots:
     static void onTasksButtonClicked();
 
 private:
-    Ui::MainWindow *ui;
 };
 
 #endif // MAINWINDOW_H

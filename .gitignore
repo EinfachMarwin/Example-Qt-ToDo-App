@@ -169,6 +169,7 @@ _deps
 
 # User-specific stuff
 .DS_Store
+ToDoApp.db
 
 # AWS User-specific
 

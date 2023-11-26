@@ -6,27 +6,17 @@
 #define DBMANAGER_H
 
 #include <QtSql>
+#include <QSqlDatabase>
+
 
 // Class for managing the database
 class DbManager {
 public:
-    explicit DbManager(const QString &);
+    explicit DbManager(const QString& path);
     ~DbManager();
-
-    // Create all tables
-    bool createTable();
 
 private:
     QSqlDatabase db;
-
-    // Create the tables
-    bool createTasksTable();
-    bool createSubTasksTable();
-    bool createListsTable();
-    bool createTagsTable();
-    bool createPriorityTable();
-    bool createDatesTable();
-
 };
 
 #endif //DBMANAGER_H
