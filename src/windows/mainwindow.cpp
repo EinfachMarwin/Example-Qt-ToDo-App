@@ -3,11 +3,17 @@
 //
 
 #include "windows/mainwindow.h"
+
+#include <widgets/listwidget.h>
+#include <widgets/taskwidget.h>
+#include <windows/settingswindow.h>
+
 #include "dbmanager.h"
 
 // Constructor for the main window
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     setWindowTitle("ToDo List");
+    setStyleSheet("background-color: #d0e1f9;");
 
     // Create a central widget
     auto *mainWidget = new QWidget(this);
@@ -15,16 +21,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     // Set minimum size for the central widget
     mainWidget->setMinimumSize(800, 600);
 
+
     // Create a main layout for the central widget
     auto *mainLayout = new QHBoxLayout(mainWidget);
     mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->setSpacing(0);
 
     // Create a Widget for the sidebar
     auto *sidebarWidget = new QWidget(this);
     sidebarWidget->setStyleSheet("background-color: #1e1f26;");
     sidebarWidget->setFixedWidth(50);
     mainLayout->addWidget(sidebarWidget);
-    mainLayout->setAlignment(sidebarWidget, Qt::AlignLeft);
 
     // Create a layout for the sidebar
     auto *sidebarLayout = new QVBoxLayout(sidebarWidget);
@@ -32,7 +39,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
     //TODO Change appearance of the tooltips
     //TODO Error handling for Image loading
-    //TODO recheck if hardcoded paths are necessary
     // Create a label for the logo in the sidebar
     const QPixmap appLogo(":res/images/LogoToDoAppTransparent.png");
     const QPixmap scaledAppLogo = appLogo.scaled(48, 48, Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -44,7 +50,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
     //TODO add hover effect to the buttons
     //TODO add click effect to the buttons
-    //TODO move task button directly under the logo
     // Create a button for the Tasks Window in the sidebar
     auto *tasksButton = new QPushButton(this);
     tasksButton->setStyleSheet("border: none; background-color: #1e1f26;");
@@ -78,24 +83,37 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     connect(helpButton, &QPushButton::clicked, this, &MainWindow::onHelpButtonClicked);
     connect(settingsButton, &QPushButton::clicked, this, &MainWindow::onSettingsButtonClicked);
     connect(tasksButton, &QPushButton::clicked, this, &MainWindow::onTasksButtonClicked);
+
+    // Addd the list widget and the task widget to the main layout
+    auto *listWidget = new ListWidget(mainWidget);
+    auto *taskWidget = new TaskWidget(mainWidget);
+
+    // TODO Splitter does not work properly yet, fix it
+    // Create a splitter for the list widget and the task widget
+    auto *splitter = new QSplitter(Qt::Horizontal, mainWidget);
+    splitter->addWidget(listWidget);
+    splitter->addWidget(taskWidget);
+    mainLayout->addWidget(splitter);
 }
 
 // Function handles help button click
 void MainWindow::onHelpButtonClicked() {
-    qDebug() << "Help button clicked";
+    // Open the help page in the default browser
     QDesktopServices::openUrl(QUrl("https://github.com/EinfachMarwin"));
+    qDebug() << "Help button clicked";
 }
 
 // Function handles settings button click
 void MainWindow::onSettingsButtonClicked() {
+    // Open the settings window
+    auto *settingsWindow = new SettingsWindow();
+    settingsWindow->exec();
     qDebug() << "Settings button clicked";
-    //TODO implement settings window
 }
 
 // Function handles tasks button click
 void MainWindow::onTasksButtonClicked() {
     qDebug() << "Tasks button clicked";
-    //TODO implement tasks window
 }
 
 // Destructor for the main window

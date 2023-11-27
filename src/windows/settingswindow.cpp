@@ -4,8 +4,16 @@
 
 #include "windows/settingswindow.h"
 
-SettingsWindow::SettingsWindow(QWindow *parent) : QWindow(parent) {
+SettingsWindow::SettingsWindow(QWidget *parent) : QDialog(parent) {
+    // Set window title
+    setWindowTitle("ToDo-Settings");
+    // Create main Widget
+    auto *mainWidget = new QWidget(this);
+    mainWidget->setFixedSize(QSize(500, 400));
 
+    // Create main layout
+    auto *mainLayout = new QVBoxLayout(mainWidget);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
 }
 
 SettingsWindow::~SettingsWindow() {

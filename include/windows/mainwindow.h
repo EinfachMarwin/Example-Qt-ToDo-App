@@ -15,7 +15,7 @@
 #include <QPixmap>
 #include <QIcon>
 #include <QApplication>
-
+#include <QSplitter>
 
 #include <QDesktopServices>
 

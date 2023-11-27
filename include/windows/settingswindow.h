@@ -5,13 +5,14 @@
 #ifndef SETTINGSWINDOW_H
 #define SETTINGSWINDOW_H
 
-#include <QWindow>
+#include <QDialog>
+#include <QVBoxLayout>
 
-class SettingsWindow : public QWindow {
+class SettingsWindow : public QDialog {
     Q_OBJECT
 
 public:
-    explicit SettingsWindow(QWindow *parent = nullptr);
+    explicit SettingsWindow(QWidget *parent = nullptr);
     ~SettingsWindow() override;
 };
 

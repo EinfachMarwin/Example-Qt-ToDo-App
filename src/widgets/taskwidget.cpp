@@ -4,10 +4,17 @@
 
 #include "widgets/taskwidget.h"
 
+#include <QVBoxLayout>
 
 
 TaskWidget::TaskWidget(QWidget *parent) : QWidget(parent) {
+    auto *mainWidget = new QWidget(this);
+    mainWidget->setStyleSheet("background-color: #d0e1f9;");
+    mainWidget->setMinimumSize(QSize(250, 600));
 
+    auto *mainLayout = new QVBoxLayout(mainWidget);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    parent->layout()->addWidget(mainWidget);
 }
 
 TaskWidget::~TaskWidget() {
