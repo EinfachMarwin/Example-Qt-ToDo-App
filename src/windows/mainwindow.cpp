@@ -87,13 +87,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     // Addd the list widget and the task widget to the main layout
     auto *listWidget = new ListWidget(mainWidget);
     auto *taskWidget = new TaskWidget(mainWidget);
+    mainLayout->addWidget(listWidget);
+    mainLayout->addWidget(taskWidget);
 
-    // TODO Splitter does not work properly yet, fix it
-    // Create a splitter for the list widget and the task widget
-    auto *splitter = new QSplitter(Qt::Horizontal, mainWidget);
-    splitter->addWidget(listWidget);
-    splitter->addWidget(taskWidget);
-    mainLayout->addWidget(splitter);
+
 }
 
 // Function handles help button click

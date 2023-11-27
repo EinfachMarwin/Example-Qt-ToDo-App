@@ -38,6 +38,9 @@ The ToDo List application showcases a sleek and contemporary design, utilizing a
 # References
 ## Icon-Attribution
 This project uses icons from [Icons8](https://icons8.com/). The icons are not modified. <br>
-1. <a target="_blank" href="https://icons8.com/icon/83214/einstellungen">Einstellungen</a> Icon von <a target="_blank" href="https://icons8.com">Icons8</a> <br>
-2. <a target="_blank" href="https://icons8.com/icon/84094/doppel-tick">Doppel Tick</a> Icon von <a target="_blank" href="https://icons8.com">Icons8</a> <br>
-3. <a target="_blank" href="https://icons8.com/icon/59807/hilfe">Hilfe</a> Icon von <a target="_blank" href="https://icons8.com">Icons8</a> <br>
+1. <a target="_blank" href="https://icons8.com/icon/83214/einstellungen">Einstellungen</a> 
+2. <a target="_blank" href="https://icons8.com/icon/84094/doppel-tick">Doppel Tick</a> 
+3. <a target="_blank" href="https://icons8.com/icon/59807/hilfe">Hilfe</a> 
+4. <a target="_blank" href="https://icons8.com/icon/59782/fehler">Fehler</a> 
+5. <a target="_blank" href="https://icons8.com/icon/100835/inbox">Inbox</a>
+6. <a target="_blank" href="https://icons8.com/icon/60002/sun">Sun</a> 

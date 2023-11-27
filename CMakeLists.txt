@@ -48,6 +48,9 @@ qt_add_resources(
             res/images/LogoToDoAppTransparent.png
             res/images/SettingsIcon.png
             res/images/TasksListIcon.png
+            res/images/ImportantIcon.png
+            res/images/TodayIcon.png
+            res/images/InboxIcon.png
 )
 
 target_qt_deploy(ToDo)
