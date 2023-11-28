@@ -13,7 +13,6 @@
 // Constructor for the main window
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     setWindowTitle("ToDo List");
-    setStyleSheet("background-color: #d0e1f9;");
 
     // Create a central widget
     auto *mainWidget = new QWidget(this);
@@ -30,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     // Create a Widget for the sidebar
     auto *sidebarWidget = new QWidget(this);
     sidebarWidget->setStyleSheet("background-color: #1e1f26;");
-    sidebarWidget->setFixedWidth(50);
+    sidebarWidget->setFixedWidth(55);
     mainLayout->addWidget(sidebarWidget);
 
     // Create a layout for the sidebar
@@ -46,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     logoLabel->setGeometry(QRect(0, 0, 48, 48));
     logoLabel->setPixmap(scaledAppLogo);
     sidebarLayout->addWidget(logoLabel);
-    sidebarLayout->setAlignment(logoLabel, Qt::AlignTop);
+    sidebarLayout->setAlignment(logoLabel, Qt::AlignCenter);
 
     //TODO add hover effect to the buttons
     //TODO add click effect to the buttons

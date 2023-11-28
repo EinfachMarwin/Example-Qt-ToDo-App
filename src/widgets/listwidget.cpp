@@ -12,8 +12,8 @@ ListWidget::ListWidget(QWidget *parent) : QWidget(parent) {
     // Create main Widget
     auto *mainWidget = new QWidget(this);
     mainWidget->setStyleSheet("background-color: #283655;");
-    mainWidget->setMinimumSize(QSize(110, 600));
-    mainWidget->setMaximumWidth(250);
+    mainWidget->setMinimumSize(QSize(200, 600));
+    mainWidget->setMaximumWidth(300);
 
     // Create main layout
     auto *mainLayout = new QVBoxLayout(mainWidget);
@@ -57,7 +57,7 @@ QWidget* ListWidget::createMenuWidget() {
 
     // Create a widget for "Important, Today and Inbox"
     auto *menuWidget = new QWidget(listWidget);
-    menuWidget->setFixedHeight(80);
+    menuWidget->setFixedHeight(90);
     menuWidget->setMinimumWidth(140);
 
     // Create a layout for the menu widget
@@ -83,9 +83,9 @@ QPushButton* ListWidget::createMenuButton(const QString& buttonName, const QStri
     // Create a button for the list widget
     auto *menuButton = new QPushButton(this);
     menuButton->setText(buttonName);
-    menuButton->setStyleSheet("border: none; color: #ffffff; font-size: 12px; font-weight: bold;");
+    menuButton->setStyleSheet("border: none; color: #ffffff; font-size: 13px; font-weight: bold;");
     menuButton->setIcon(QIcon(iconPath));
-    menuButton->setIconSize(QSize(20, 20));
+    menuButton->setIconSize(QSize(17, 17));
     parent->addWidget(menuButton);
     parent->setAlignment(menuButton, Qt::AlignLeft);
 

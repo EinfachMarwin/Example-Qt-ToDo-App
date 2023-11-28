@@ -5,7 +5,9 @@
 #ifndef TASKWIDGET_H
 #define TASKWIDGET_H
 
+#include <QApplication>
 #include <QWidget>
+#include <QLineEdit>
 
 class TaskWidget : public QWidget {
     Q_OBJECT
@@ -13,6 +15,11 @@ class TaskWidget : public QWidget {
 public:
     explicit TaskWidget(QWidget *parent = nullptr);
     ~TaskWidget() override;
+
+public slots:
+    static void retunPressed();
+private:
+    QWidget* createHeaderWidget();
 };
 
 
