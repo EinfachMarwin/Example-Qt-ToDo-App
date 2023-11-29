@@ -1,12 +1,20 @@
 # ToDo-Applikation
 
+---
 # Table of Contents
 1. [Introduction](#introduction)
 2. [Features](#features)
 3. [Installation](#installation)
-4. [SQLite Database](#sqlite-database)
+    - [Prerequisites](#prerequisites)
+    - [Windows](#windows)
+    - [Linux](#linux)
+    - [macOS](#macos)
+    - [Troubleshooting](#troubleshooting)
+4. [TinyORM](#tinyorm)
 5. [App Color Scheme](#app-color-scheme)
 6. [References](#references)
+
+---
 
 # Introduction
 The ToDo List application is a simple and intuitive task management tool that allows users to create, 
@@ -14,11 +22,66 @@ edit, and delete tasks. The application is designed to be user-friendly and easy
 The application is built using C++ and Qt, and is compatible with Windows, macOS, and Linux operating systems.
 For Data Storage, the application uses a SQLite database to store user data locally on the user's device.
 
+---
+
 # Features
 
-# Installation
+---
 
-# SQLite Database
+# Installation
+At the moment, the ToDo List application is not available for download as a standalone executable. We are working on making the application available for download in the near future. In the meantime, you can download the source code and build the application yourself. See the instructions below for your operating system.
+
+**The application is built using the following technologies:**
+- C++ 20
+- Qt6
+- SQLite3
+- TinyORM 0.36.5
+- CMake 3.9
+- vcpkg package manager
+
+## Prerequisites
+1. Download the vcpkg package manager from [here](https://vcpkg.io/en/getting-started.html) and follow the instructions to install it.
+2. Download the source code from this repository.
+3. You don´t need to install Qt, vcpkg will do that for you.
+
+Ensure you have CMake and vcpkg installed on your system. These tools are necessary for building the program and managing its dependencies.
+## Windows 
+To use use this project on Windows, you need to add the following options to your CMake settings:
+
+1. **Set the VCPKG Target Triplet:**
+   Add the following option to your CMake settings to specify the correct vcpkg target triplet:
+   ```bash
+   -DVCPKG_TARGET_TRIPLET="x64-mingw-dynamic"
+    ```
+   This informs CMake which architecture and build configuration to use.
+2. **Define the VCPKG Overlay Port:**
+   Set the VCPKG overlay port to the path containing the `tinyorm` library:
+   ```bash
+   -DVCPKG_OVERLAY_PORTS="<your installation path>/ports/overlays/tinyorm"
+   ```
+   Replace `<your installation path>` with the actual path to your CMake project directory.
+
+3. **Specify the CMake Toolchain File:**
+   Provide the path to your CMake toolchain file:
+   ```bash
+   -DCMAKE_TOOLCHAIN_FILE="<your installation path>/cmake/Toolchain.cmake"
+   ```
+   Again, replace `<your installation path>` with the path to your CMake project directory.
+
+After you have made these settings, you should be able to configure and build the project using CMake. Follow the usual steps to build a CMake project in your development environment.
+
+## Linux
+The instructions for building the project on Linux will be added soon.
+
+## macOS
+Unfortunately, the ToDo List can´t be built on macOS at the moment. The reason for this is that the TinyORM library, which is used in the project, is not compatible with macOS. 
+
+## Troubleshooting
+If you encounter any issues during the installation or configuration, please check that all paths are set correctly and that the required dependencies have been installed via vcpkg. If you continue to experience problems, do not hesitate to create an issue in the project repository.
+
+---
+
+# TinyORM
 
 # App Color Scheme
 The ToDo List application showcases a sleek and contemporary design, utilizing a harmonious palette of cool tones that underpin its modern and user-friendly interface. The color scheme is implemented throughout the app to ensure visual consistency and a seamless user experience.
