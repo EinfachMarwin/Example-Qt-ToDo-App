@@ -46,13 +46,14 @@ QWidget* TaskWidget::createHeaderWidget() {
     // Create line edit to add new tasks
     auto *addTaskLineEdit = new QLineEdit(this);
     addTaskLineEdit->setStyleSheet("background-color: #d0e1f9; color: #283655; font-size: 16px; border-radius: 5px;");
+    addTaskLineEdit->setContentsMargins(4, 4, 4, 4);
     addTaskLineEdit->setPlaceholderText("Add a new task... press enter to save");
     addTaskLineEdit->setFixedHeight(40);
     headerLayout->addSpacing(1);
     headerLayout->addWidget(addTaskLineEdit);
 
     // Connect the returnPressed signal to the addTask slot
-    connect(addTaskLineEdit, &QLineEdit::returnPressed, this, &TaskWidget::createHeaderWidget);
+    connect(addTaskLineEdit, &QLineEdit::returnPressed, this, &TaskWidget::retunPressed);
 
     return headerWidget;
 }

@@ -5,8 +5,12 @@
 #include "windows/mainwindow.h"
 #include "dbmanager.h"
 
+#include <sqlite3.h>
+
 // Function initializes the Application
 int main(int argc, char* argv[]) {
+    qDebug() << "SQLite3 version" << sqlite3_libversion();
+
     // Create the application
     QApplication app(argc, argv);
     // Create the main window

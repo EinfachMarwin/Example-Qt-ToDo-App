@@ -4,17 +4,15 @@ if(WIN32)
     get_target_property(QMAKE_EXE Qt6::qmake IMPORTED_LOCATION)
     get_filename_component(QT_BIN_DIR "${QMAKE_EXE}" DIRECTORY)
 
-    find_program(WINDEPLOYQT_ENV_SETUP qtenv2.bat PATHS "${QT_BIN_DIR}")
     find_program(WINDEPLOYQT_EXE windeployqt PATHS "${QT_BIN_DIR}")
 
-    message(STATUS "Using qtenv2.bat from ${WINDEPLOYQT_ENV_SETUP}")
     message(STATUS "Using windeployqt.exe from ${WINDEPLOYQT_EXE}")
 
     function(target_qt_deploy TARGET)
         add_custom_command(
                 TARGET ${TARGET}
                 POST_BUILD
-                COMMAND "${WINDEPLOYQT_ENV_SETUP}" && "${WINDEPLOYQT_EXE} \"$<TARGET_FILE:${TARGET}>\""
+                COMMAND ${WINDEPLOYQT_EXE} --no-libraries "$<TARGET_FILE:${TARGET}>"
                 COMMAND_EXPAND_LISTS
         )
     endfunction()

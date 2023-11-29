@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.9)
 project(ToDo VERSION 0.1 LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
@@ -15,6 +15,9 @@ find_package(Qt6 COMPONENTS
         Widgets
         Sql
         REQUIRED)
+
+find_package(TinyOrm 0.36.5 CONFIG REQUIRED)
+find_package(SQLite3 REQUIRED)
 
 qt_standard_project_setup()
 
@@ -39,7 +42,12 @@ target_link_libraries(ToDo
         Qt6::Gui
         Qt6::Widgets
         Qt6::Sql
+
+        TinyOrm::TinyOrm
+
+        SQLite::SQLite3
 )
+
 qt_add_resources(
         ToDo "resources"
         PREFIX "/"
@@ -54,3 +62,7 @@ qt_add_resources(
 )
 
 target_qt_deploy(ToDo)
+
+if (MINGW)
+    target_link_libraries(ToDo -static-libgcc)
+endif ()
