@@ -3,17 +3,20 @@
 //
 
 #include "widgets/taskwidget.h"
+#include "database/models/task.h"
 
 #include <QLabel>
 #include <QVBoxLayout>
 
 
-TaskWidget::TaskWidget(QWidget *parent) : QWidget(parent) {
-    auto *mainWidget = new QWidget(this);
+
+TaskWidget::TaskWidget(QWidget* parent) : QWidget(parent)
+{
+    auto* mainWidget = new QWidget(this);
     mainWidget->setStyleSheet("background-color: #ffffff;");
     mainWidget->setMinimumSize(QSize(250, 600));
 
-    auto *mainLayout = new QVBoxLayout(mainWidget);
+    auto* mainLayout = new QVBoxLayout(mainWidget);
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->addWidget(createHeaderWidget());
     mainLayout->addStretch();
@@ -21,30 +24,31 @@ TaskWidget::TaskWidget(QWidget *parent) : QWidget(parent) {
     parent->layout()->addWidget(mainWidget);
 }
 
-TaskWidget::~TaskWidget() {
-
+TaskWidget::~TaskWidget()
+{
 }
 
-QWidget* TaskWidget::createHeaderWidget() {
+QWidget* TaskWidget::createHeaderWidget()
+{
     // Create a header widget
-    auto *headerWidget = new QWidget(this);
+    auto* headerWidget = new QWidget(this);
     headerWidget->setFixedHeight(250);
 
 
     // Create a layout for the header widget
-    auto *headerLayout = new QVBoxLayout(headerWidget);
+    auto* headerLayout = new QVBoxLayout(headerWidget);
     headerLayout->setContentsMargins(5, 0, 0, 0);
     headerLayout->setAlignment(Qt::AlignTop);
     headerLayout->setContentsMargins(10, 10, 10, 10);
 
     // Create a label for the header widget
-    auto *headerLabel = new QLabel(headerWidget);
+    auto* headerLabel = new QLabel(headerWidget);
     headerLabel->setText("<LISTNAME HERE>");
     headerLabel->setStyleSheet("color: #1e1f26; font-size: 20px; font-weight: bold;");
     headerLayout->addWidget(headerLabel);
 
     // Create line edit to add new tasks
-    auto *addTaskLineEdit = new QLineEdit(this);
+    auto* addTaskLineEdit = new QLineEdit(this);
     addTaskLineEdit->setStyleSheet("background-color: #d0e1f9; color: #283655; font-size: 16px; border-radius: 5px;");
     addTaskLineEdit->setContentsMargins(4, 4, 4, 4);
     addTaskLineEdit->setPlaceholderText("Add a new task... press enter to save");
@@ -58,8 +62,14 @@ QWidget* TaskWidget::createHeaderWidget() {
     return headerWidget;
 }
 
-void TaskWidget::retunPressed() {
-    qDebug() << "Return pressed";
+void TaskWidget::retunPressed()
+{
+    QString taskName = addTaskLineEdit->text();
+
+
+
+    addTaskLineEdit->clear();
+    qDebug() << "Return pressed and task added: " << taskName;
 }
 
 // IMPORTANT: Do not delete the following line; otherwise, the program will crash.

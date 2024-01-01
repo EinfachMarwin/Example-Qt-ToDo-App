@@ -8,15 +8,16 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-ListWidget::ListWidget(QWidget *parent) : QWidget(parent) {
+ListWidget::ListWidget(QWidget* parent) : QWidget(parent)
+{
     // Create main Widget
-    auto *mainWidget = new QWidget(this);
+    auto* mainWidget = new QWidget(this);
     mainWidget->setStyleSheet("background-color: #283655;");
     mainWidget->setMinimumSize(QSize(200, 600));
     mainWidget->setMaximumWidth(300);
 
     // Create main layout
-    auto *mainLayout = new QVBoxLayout(mainWidget);
+    auto* mainLayout = new QVBoxLayout(mainWidget);
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
     mainLayout->addWidget(createHeaderWidget());
@@ -24,20 +25,22 @@ ListWidget::ListWidget(QWidget *parent) : QWidget(parent) {
     parent->layout()->addWidget(mainWidget);
 }
 
-ListWidget::~ListWidget() {
+ListWidget::~ListWidget()
+{
 }
 
-QWidget* ListWidget::createHeaderWidget() {
+QWidget* ListWidget::createHeaderWidget()
+{
     // Create a header widget
-    auto *headerWidget = new QWidget(this);
+    auto* headerWidget = new QWidget(this);
     headerWidget->setMaximumHeight(50);
 
     // Create a layout for the header widget
-    auto *headerLayout = new QHBoxLayout(headerWidget);
+    auto* headerLayout = new QHBoxLayout(headerWidget);
     headerLayout->setContentsMargins(5, 0, 0, 0);
 
     // Create a label for the header widget
-    auto *headerLabel = new QLabel(headerWidget);
+    auto* headerLabel = new QLabel(headerWidget);
     headerLabel->setText("ShowToDo");
     headerLabel->setStyleSheet("color: #d0e1f9; font-size: 20px; font-weight: bold;");
     headerLayout->addWidget(headerLabel);
@@ -46,30 +49,31 @@ QWidget* ListWidget::createHeaderWidget() {
     return headerWidget;
 }
 
-QWidget* ListWidget::createMenuWidget() {
+QWidget* ListWidget::createMenuWidget()
+{
     // Create a list widget
-    auto *listWidget = new QWidget(this);
+    auto* listWidget = new QWidget(this);
     resize(QSize(110, 600));
 
     // Create a layout for the list widget
-    auto *listLayout = new QVBoxLayout(listWidget);
+    auto* listLayout = new QVBoxLayout(listWidget);
     listLayout->setContentsMargins(0, 0, 0, 0);
 
     // Create a widget for "Important, Today and Inbox"
-    auto *menuWidget = new QWidget(listWidget);
+    auto* menuWidget = new QWidget(listWidget);
     menuWidget->setFixedHeight(90);
     menuWidget->setMinimumWidth(140);
 
     // Create a layout for the menu widget
-    auto *menuLayout = new QVBoxLayout(menuWidget);
+    auto* menuLayout = new QVBoxLayout(menuWidget);
     menuLayout->setContentsMargins(10, 10, 10, 10);
 
     // Create button for "Important"
-    const auto *importantButton = createMenuButton("  IMPORTANT", ":res/images/ImportantIcon.png", menuLayout);
+    const auto* importantButton = createMenuButton("  IMPORTANT", ":res/images/ImportantIcon.png", menuLayout);
     // Create button for "Today"
-    const auto *todayButton = createMenuButton("  TODAY", ":res/images/TodayIcon.png", menuLayout);
+    const auto* todayButton = createMenuButton("  TODAY", ":res/images/TodayIcon.png", menuLayout);
     // Create button for "Inbox"
-    const auto *inboxButton = createMenuButton("  INBOX", ":res/images/InboxIcon.png", menuLayout);
+    const auto* inboxButton = createMenuButton("  INBOX", ":res/images/InboxIcon.png", menuLayout);
 
     // Connect the buttons to the slots
     connect(importantButton, &QPushButton::clicked, this, &ListWidget::onImportantButtonClicked);
@@ -79,9 +83,10 @@ QWidget* ListWidget::createMenuWidget() {
     return listWidget;
 }
 
-QPushButton* ListWidget::createMenuButton(const QString& buttonName, const QString& iconPath, QLayout* parent) {
+QPushButton* ListWidget::createMenuButton(const QString& buttonName, const QString& iconPath, QLayout* parent)
+{
     // Create a button for the list widget
-    auto *menuButton = new QPushButton(this);
+    auto* menuButton = new QPushButton(this);
     menuButton->setText(buttonName);
     menuButton->setStyleSheet("border: none; color: #ffffff; font-size: 13px; font-weight: bold;");
     menuButton->setIcon(QIcon(iconPath));
@@ -92,17 +97,20 @@ QPushButton* ListWidget::createMenuButton(const QString& buttonName, const QStri
     return menuButton;
 }
 
-void ListWidget::onTodayButtonClicked() {
+void ListWidget::onTodayButtonClicked()
+{
     // TODO: Implement this method
     qDebug() << "Today button clicked";
 }
 
-void ListWidget::onImportantButtonClicked() {
+void ListWidget::onImportantButtonClicked()
+{
     //TODO: Implement this method
     qDebug() << "Important button clicked";
 }
 
-void ListWidget::onInboxButtonClicked() {
+void ListWidget::onInboxButtonClicked()
+{
     //TODO: Implement this method
     qDebug() << "Inbox button clicked";
 }

@@ -1,32 +1,51 @@
- //
+//
 // Created by Marwin Nowak on 21.11.23.
 //
 
+
 #include "dbmanager.h"
 
-// Constructor for the database manager
-DbManager::DbManager(const QString&path) {
-    // Create a connection to the database
-    db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName(path);
+using Orm::DB;
 
-    // Check if the database is open
-    if (!db.open()) {
-        qDebug() << "Error: connection with database failed";
+using ConfigUtils = Orm::Utils::Configuration;
+
+using namespace Orm::Constants; // NOLINT(google-build-using-namespace)
+
+DatabaseManager::DatabaseManager(const QString &databasePath)
+{
+    // Create a database connection
+    db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(databasePath);
+
+    if (!db.open())
+    {
+        qDebug() << "Error: connection with database fail";
     }
-    else {
-        qDebug() << "Database: connection established successfully";
+    else
+    {
+        qDebug() << "Database: connection ok";
     }
+
+    auto manager = DB::create({
+        {"driver",                  "QSQLITE"},
+        {"database",                databasePath},
+        {"foreign_key_constraints", true},
+        {"check_database_exists",   true},
+        {"qt_timezone",             QVariant::fromValue(Qt::UTC)},
+        {"return_qdatetime",        true},
+        {"prefix",                  ""},
+        {"prefix_indexes",          false},
+    });
 }
 
-// Close the database connection
-DbManager::~DbManager() {
-    // Check if the database is open
-    if (db.isOpen()) {
+DatabaseManager::~DatabaseManager()
+{
+    if (db.isOpen())
+    {
         db.close();
-        qDebug() << "Database: connection closed successfully";
-    }
-    else {
-        qDebug() << "Error: connection with database already closed";
+        qDebug() << "Database: connection closed";
+    } else
+    {
+        qDebug() << "Database: connection already closed";
     }
 }

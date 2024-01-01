@@ -8,7 +8,8 @@
 #include <sqlite3.h>
 
 // Function initializes the Application
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[])
+{
     qDebug() << "SQLite3 version" << sqlite3_libversion();
 
     // Create the application
@@ -21,7 +22,7 @@ int main(int argc, char* argv[]) {
     QApplication::setWindowIcon(QIcon(":res/images/LogoToDoAppTransparent.png"));
 
     // Create a database manager
-    DbManager dbManager("ToDoApp.db");
+    DatabaseManager dbManager("../database.db");
 
     return app.exec();
 }

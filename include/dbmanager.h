@@ -4,18 +4,19 @@
 
 #ifndef DBMANAGER_H
 #define DBMANAGER_H
+#include <memory>
 
-#include <QtSql>
-#include <QSqlDatabase>
+#include <orm/db.hpp>
+#include <orm/utils/configuration.hpp>
 
-
-// Class for managing the database
-class DbManager {
+class DatabaseManager
+{
 public:
-    explicit DbManager(const QString& path);
-    ~DbManager();
+    DatabaseManager(const QString &databasePath);
+    ~DatabaseManager();
 
 private:
+    std::shared_ptr<Orm::DatabaseManager> manager;
     QSqlDatabase db;
 };
 

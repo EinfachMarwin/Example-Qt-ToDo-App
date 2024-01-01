@@ -9,22 +9,22 @@
 #include <QWidget>
 #include <QLineEdit>
 
-class TaskWidget : public QWidget {
+class TaskWidget : public QWidget
+{
     Q_OBJECT
 
 public:
-    explicit TaskWidget(QWidget *parent = nullptr);
+    explicit TaskWidget(QWidget* parent = nullptr);
     ~TaskWidget() override;
 
 public slots:
-    static void retunPressed();
+    void retunPressed();
+
 private:
     QWidget* createHeaderWidget();
+
+    QLineEdit *addTaskLineEdit;
 };
-
-
-
-
 
 
 #endif //TASKWIDGET_H

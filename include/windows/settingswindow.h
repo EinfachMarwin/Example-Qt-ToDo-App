@@ -8,11 +8,12 @@
 #include <QDialog>
 #include <QVBoxLayout>
 
-class SettingsWindow : public QDialog {
+class SettingsWindow : public QDialog
+{
     Q_OBJECT
 
 public:
-    explicit SettingsWindow(QWidget *parent = nullptr);
+    explicit SettingsWindow(QWidget* parent = nullptr);
     ~SettingsWindow() override;
 };
 

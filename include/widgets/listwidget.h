@@ -9,11 +9,12 @@
 #include <QListWidget>
 #include <QPushButton>
 
-class ListWidget : public QWidget {
+class ListWidget : public QWidget
+{
     Q_OBJECT
 
 public:
-    explicit ListWidget(QWidget *parent = nullptr);
+    explicit ListWidget(QWidget* parent = nullptr);
     ~ListWidget() override;
 
 public slots:
