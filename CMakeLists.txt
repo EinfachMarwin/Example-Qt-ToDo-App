@@ -44,7 +44,7 @@ target_link_libraries(ToDo
         Qt6::Sql
 
         TinyOrm::TinyOrm
-
+        
         SQLite::SQLite3
 )
 

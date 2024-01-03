@@ -50,7 +50,7 @@ QWidget* TaskWidget::createHeaderWidget()
     addTaskLineEdit = new QLineEdit(this);
     addTaskLineEdit->setStyleSheet("background-color: #d0e1f9; color: #283655; font-size: 16px; border-radius: 5px;");
     addTaskLineEdit->setContentsMargins(4, 4, 4, 4);
-    addTaskLineEdit->setPlaceholderText("Add a new task... press enter to save");
+    addTaskLineEdit->setPlaceholderText(tr("Add a new task... press enter to save"));
     addTaskLineEdit->setFixedHeight(40);
     headerLayout->addSpacing(1);
     headerLayout->addWidget(addTaskLineEdit);
