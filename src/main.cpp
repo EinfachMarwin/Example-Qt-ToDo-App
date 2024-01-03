@@ -6,6 +6,8 @@
 #include "dbmanager.h"
 
 #include <sqlite3.h>
+#include <database/models/task.h>
+#include <database/models/list.h>
 
 // Function initializes the Application
 int main(int argc, char* argv[])
@@ -23,6 +25,10 @@ int main(int argc, char* argv[])
 
     // Create a database manager
     DatabaseManager dbManager("../database.db");
+
+    // Create tables
+    List::createTable();
+    Task::createTable();
 
     return app.exec();
 }

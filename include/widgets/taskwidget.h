@@ -8,6 +8,8 @@
 #include <QApplication>
 #include <QWidget>
 #include <QLineEdit>
+#include <qdebug.h>
+#include <QListWidget>
 
 class TaskWidget : public QWidget
 {
@@ -22,8 +24,10 @@ public slots:
 
 private:
     QWidget* createHeaderWidget();
+    void loadTasks();
 
     QLineEdit *addTaskLineEdit;
+    QListWidget *taskListWidget;
 };
 
 

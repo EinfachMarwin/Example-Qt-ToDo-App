@@ -34,7 +34,6 @@ QWidget* TaskWidget::createHeaderWidget()
     auto* headerWidget = new QWidget(this);
     headerWidget->setFixedHeight(250);
 
-
     // Create a layout for the header widget
     auto* headerLayout = new QVBoxLayout(headerWidget);
     headerLayout->setContentsMargins(5, 0, 0, 0);
@@ -48,7 +47,7 @@ QWidget* TaskWidget::createHeaderWidget()
     headerLayout->addWidget(headerLabel);
 
     // Create line edit to add new tasks
-    auto* addTaskLineEdit = new QLineEdit(this);
+    addTaskLineEdit = new QLineEdit(this);
     addTaskLineEdit->setStyleSheet("background-color: #d0e1f9; color: #283655; font-size: 16px; border-radius: 5px;");
     addTaskLineEdit->setContentsMargins(4, 4, 4, 4);
     addTaskLineEdit->setPlaceholderText("Add a new task... press enter to save");
@@ -64,12 +63,23 @@ QWidget* TaskWidget::createHeaderWidget()
 
 void TaskWidget::retunPressed()
 {
+    qDebug() << "Return pressed";
     QString taskName = addTaskLineEdit->text();
+    qDebug() << "Task name";
+    // Create a new task
+    Task task;
+    qDebug() << "Task created";
+    task.description = taskName.toStdString();
+    task.list_id = 1;
+    qDebug() << "Task description";
 
+    // Save the task in the database
+    task.save();
+    qDebug() << "Task saved";
 
-
+    // Clear the line edit
     addTaskLineEdit->clear();
-    qDebug() << "Return pressed and task added: " << taskName;
+    qDebug() << "Line edit cleared";
 }
 
 // IMPORTANT: Do not delete the following line; otherwise, the program will crash.

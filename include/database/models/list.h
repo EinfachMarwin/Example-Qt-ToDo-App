@@ -6,32 +6,43 @@
 #define LIST_H
 
 #include <orm/tiny/model.hpp>
-#include <QString>
+#include <orm/db.hpp>
 
+using Orm::DB;
 using Orm::Tiny::Model;
 
-class List final : public Model<List>
+class List : public Model<List>
 {
-    friend Model;
-
-    using Model::Model;
-
-private:
-    QString name;
-    int main_list_id;
-
 public:
-    // Getter für name
-    QString getName() const { return name; }
+    // Define table name
+    static constexpr auto table = "listen";
 
-    // Setter für name
-    void setName(const QString &value) { name = value; }
+    // Define fields
+    int id;
+    std::string name;
 
-    // Getter für main_list_id
-    int getMainListId() const { return main_list_id; }
+    static void createTable()
+    {
+        DB::statement("CREATE TABLE IF NOT EXISTS listen (id INTEGER PRIMARY KEY, name TEXT)");
+    }
 
-    // Setter für main_list_id
-    void setMainListId(int value) { main_list_id = value; }
+    void save()
+    {
+        // Start a new transaction
+        DB::beginTransaction();
+
+        try {
+            QVector<QVariant> values = {QString::fromStdString(name)};
+            DB::statement("INSERT INTO listen (name) VALUES (?)", values);
+
+            // Commit the transaction
+            DB::commit();
+        } catch (...) {
+            // An error occurred, rollback the transaction
+            DB::rollBack();
+            throw;  // Re-throw the exception
+        }
+    }
 };
 
 #endif //LIST_H
