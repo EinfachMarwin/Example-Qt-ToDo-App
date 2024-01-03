@@ -14,6 +14,7 @@ find_package(Qt6 COMPONENTS
         Gui
         Widgets
         Sql
+        LinguistTools
         REQUIRED)
 
 find_package(TinyOrm 0.36.5 CONFIG REQUIRED)
