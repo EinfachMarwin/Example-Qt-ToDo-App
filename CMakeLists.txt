@@ -36,6 +36,10 @@ add_executable(ToDo
 
         src/widgets/taskwidget.cpp
         src/widgets/listwidget.cpp
+
+        ${CMAKE_BINARY_DIR}/translations.qrc
+        ${QM_FILES}
+
 )
 target_include_directories(ToDo PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(ToDo
@@ -45,7 +49,7 @@ target_link_libraries(ToDo
         Qt6::Sql
 
         TinyOrm::TinyOrm
-        
+
         SQLite::SQLite3
 )
 
@@ -53,14 +57,23 @@ qt_add_resources(
         ToDo "resources"
         PREFIX "/"
         FILES
-            res/images/HelpIcon.png
-            res/images/LogoToDoAppTransparent.png
-            res/images/SettingsIcon.png
-            res/images/TasksListIcon.png
-            res/images/ImportantIcon.png
-            res/images/TodayIcon.png
-            res/images/InboxIcon.png
+        res/images/HelpIcon.png
+        res/images/LogoToDoAppTransparent.png
+        res/images/SettingsIcon.png
+        res/images/TasksListIcon.png
+        res/images/ImportantIcon.png
+        res/images/TodayIcon.png
+        res/images/InboxIcon.png
 )
+
+set(TS_FILES
+        translations/ToDo_de_DE.ts
+        translations/ToDo_en_EN.ts
+)
+
+qt_create_translation(QM_FILES, ${CMAKE_SOURCE_DIR} ${TS_FILES})
+configure_file(translations/translations.qrc ${CMAKE_BINARY_DIR}/translations.qrc COPYONLY)
+
 
 target_qt_deploy(ToDo)
 

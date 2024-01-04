@@ -1,0 +1,7 @@
+<!DOCTYPE RCC><RCC version="1.0">
+    <qresource>
+        <file>ToDo_de_DE.qm</file>
+        <file>ToDo_en_EN.qm</file>
+        <!-- Add other .qm files here -->
+    </qresource>
+</RCC>

@@ -9,6 +9,9 @@
       "name": "qtbase"
     },
     {
+      "name": "qttools"
+    },
+    {
       "name": "sqlite3"
     }
   ]

@@ -24,6 +24,18 @@ public:
     static void createTable()
     {
         DB::statement("CREATE TABLE IF NOT EXISTS listen (id INTEGER PRIMARY KEY, name TEXT)");
+        createDefaultInbox();
+    }
+
+    static void createDefaultInbox()
+    {
+        QSqlQuery result = DB::select("SELECT * FROM listen WHERE name = 'Inbox'");
+
+        if (!result.next()) {
+            List inbox;
+            inbox.name = "Inbox";
+            inbox.save();
+        }
     }
 
     void save()

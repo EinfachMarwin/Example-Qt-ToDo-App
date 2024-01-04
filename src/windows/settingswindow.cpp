@@ -13,6 +13,7 @@
 #include <QTextStream>
 #include <QProcess>
 #include <QTranslator>
+#include <windows/mainwindow.h>
 
 SettingsWindow::SettingsWindow(QWidget* parent) : QDialog(parent)
 {
@@ -62,8 +63,8 @@ SettingsWindow::SettingsWindow(QWidget* parent) : QDialog(parent)
 
     // Initialize languageDropdown
     languageDropdown = new QComboBox(languageWidget);
-    languageDropdown->addItem(tr("English"));
-    languageDropdown->addItem(tr("German"));
+    languageDropdown->addItem(tr("en_EN"));
+    languageDropdown->addItem(tr("de_DE"));
 
     languageLayout->addWidget(languageDropdown);
 
@@ -72,12 +73,6 @@ SettingsWindow::SettingsWindow(QWidget* parent) : QDialog(parent)
         [this](int index){
             // Get the selected language
             QString selectedLanguage = languageDropdown->itemText(index);
-
-            // Save the selected language
-            saveSettings();
-
-            // Reload the application
-            reloadApplication();
         });
 
     mainLayout->addWidget(languageWidget);
@@ -126,8 +121,11 @@ void SettingsWindow::changeLanguage(const QString& language)
     qApp->removeTranslator(&translator);
 
     // Load the new translation
-    if (translator.load(":/translations/ToDo_" + language)) {
+    if (translator.load(":/ToDo_" + language)) {
         qApp->installTranslator(&translator);
+        qApp->processEvents();
+
+
     } else {
         qWarning() << "Could not load translation file for language:" << language;
     }
@@ -168,12 +166,9 @@ void SettingsWindow::saveSettings()
 
 void SettingsWindow::reloadApplication()
 {
-    // Close the current application
-    qApp->quit();
-
-    // Start a new instance of the application
-    QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
+    this->update();
 }
+
 
 // IMPORTANT: Do not delete the following line; otherwise, the program will crash.
 #include "windows/moc_settingswindow.cpp"

@@ -5,11 +5,10 @@
 #ifndef TASKWIDGET_H
 #define TASKWIDGET_H
 
-#include <QApplication>
 #include <QWidget>
 #include <QLineEdit>
-#include <qdebug.h>
 #include <QListWidget>
+#include "database/models/task.h"
 
 class TaskWidget : public QWidget
 {
@@ -19,16 +18,17 @@ public:
     explicit TaskWidget(QWidget* parent = nullptr);
     ~TaskWidget() override;
 
-public slots:
-    void retunPressed();
+    QWidget* showTasksForListId1(); // Updated return type to QWidget*
+
+    public slots:
+        void returnPressed(); // Corrected the spelling
 
 private:
     QWidget* createHeaderWidget();
-    void loadTasks();
+    QWidget* createTaskWidget(const Task& task);
 
     QLineEdit *addTaskLineEdit;
-    QListWidget *taskListWidget;
+    QListWidget *taskListWidget; // Assuming you want to use this for task display
 };
 
-
-#endif //TASKWIDGET_H
+#endif // TASKWIDGET_H

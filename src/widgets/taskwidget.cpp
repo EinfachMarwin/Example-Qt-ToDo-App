@@ -7,6 +7,7 @@
 
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QCheckBox>
 
 
 
@@ -19,8 +20,8 @@ TaskWidget::TaskWidget(QWidget* parent) : QWidget(parent)
     auto* mainLayout = new QVBoxLayout(mainWidget);
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->addWidget(createHeaderWidget());
+    mainLayout->addWidget(showTasksForListId1());
     mainLayout->addStretch();
-
     parent->layout()->addWidget(mainWidget);
 }
 
@@ -56,12 +57,12 @@ QWidget* TaskWidget::createHeaderWidget()
     headerLayout->addWidget(addTaskLineEdit);
 
     // Connect the returnPressed signal to the addTask slot
-    connect(addTaskLineEdit, &QLineEdit::returnPressed, this, &TaskWidget::retunPressed);
+    connect(addTaskLineEdit, &QLineEdit::returnPressed, this, &TaskWidget::returnPressed);
 
     return headerWidget;
 }
 
-void TaskWidget::retunPressed()
+void TaskWidget::returnPressed()
 {
     qDebug() << "Return pressed";
     QString taskName = addTaskLineEdit->text();
@@ -70,6 +71,7 @@ void TaskWidget::retunPressed()
     Task task;
     qDebug() << "Task created";
     task.description = taskName.toStdString();
+    task.is_done = false;
     task.list_id = 1;
     qDebug() << "Task description";
 
@@ -80,6 +82,43 @@ void TaskWidget::retunPressed()
     // Clear the line edit
     addTaskLineEdit->clear();
     qDebug() << "Line edit cleared";
+}
+
+QWidget* TaskWidget::showTasksForListId1()
+{
+    auto* containerWidget = new QWidget(this);
+    auto* layout = new QVBoxLayout(containerWidget);
+
+    QVector<Task> tasks = Task::getTasksByListId(1);
+    for (const Task& task : tasks) {
+        QWidget* taskWidget = createTaskWidget(task);
+        layout->addWidget(taskWidget);
+    }
+    return containerWidget;
+}
+
+QWidget* TaskWidget::createTaskWidget(const Task& task)
+{
+    // Create a new widget for the task
+    QWidget* taskWidget = new QWidget(this);
+
+    // Create a layout for the task widget
+    QHBoxLayout* layout = new QHBoxLayout(taskWidget);
+
+    // Create a label for the task description
+    QLabel* descriptionLabel = new QLabel(QString::fromStdString(task.description), taskWidget);
+    layout->addWidget(descriptionLabel);
+
+    // Create a checkbox for the task status
+    QCheckBox* statusCheckbox = new QCheckBox(taskWidget);
+    statusCheckbox->setChecked(task.is_done);
+    layout->addWidget(statusCheckbox);
+
+    // Connect the checkbox's stateChanged signal to a slot that updates the task's status
+    connect(statusCheckbox, &QCheckBox::stateChanged, this, [this, task](int state) {
+          Task::updateTaskStatus(task.id, state == Qt::Checked);
+    });
+    return taskWidget;
 }
 
 // IMPORTANT: Do not delete the following line; otherwise, the program will crash.

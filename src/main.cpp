@@ -16,9 +16,6 @@ int main(int argc, char* argv[])
 
     // Create the application
     QApplication app(argc, argv);
-    // Create the main window
-    MainWindow w;
-    w.show();
 
     // Set the application icon
     QApplication::setWindowIcon(QIcon(":res/images/LogoToDoAppTransparent.png"));
@@ -29,6 +26,10 @@ int main(int argc, char* argv[])
     // Create tables
     List::createTable();
     Task::createTable();
+
+    // Create the main window
+    MainWindow w;
+    w.show();
 
     return app.exec();
 }
