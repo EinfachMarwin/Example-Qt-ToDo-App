@@ -89,6 +89,10 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
     auto* taskWidget = new TaskWidget(mainWidget);
     mainLayout->addWidget(listWidget);
     mainLayout->addWidget(taskWidget);
+
+    // Open the Inbox list and set the name
+    taskWidget->showTasksForListId1();
+    taskWidget->setListName("Inbox");
 }
 
 // Function handles help button click

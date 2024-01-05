@@ -5,6 +5,7 @@
 #ifndef TASKWIDGET_H
 #define TASKWIDGET_H
 
+#include <QLabel>
 #include <QWidget>
 #include <QLineEdit>
 #include <QListWidget>
@@ -18,17 +19,20 @@ public:
     explicit TaskWidget(QWidget* parent = nullptr);
     ~TaskWidget() override;
 
-    QWidget* showTasksForListId1(); // Updated return type to QWidget*
+    QWidget* showTasksForListId1();
+    void setListName(const QString& listName);
+    void refreshTaskList();
 
     public slots:
-        void returnPressed(); // Corrected the spelling
+        void returnPressed();
 
 private:
     QWidget* createHeaderWidget();
     QWidget* createTaskWidget(const Task& task);
 
     QLineEdit *addTaskLineEdit;
-    QListWidget *taskListWidget; // Assuming you want to use this for task display
+    QListWidget *taskListWidget;
+    QLabel* headerLabel;
 };
 
 #endif // TASKWIDGET_H

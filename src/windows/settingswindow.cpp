@@ -17,7 +17,7 @@
 
 SettingsWindow::SettingsWindow(QWidget* parent) : QDialog(parent)
 {
-    // Set window title
+    // Set window title and size and margins
     setWindowTitle(tr("ToDo-Settings"));
     setFixedSize(QSize(350, 200));
     setContentsMargins(20, 20, 20, 20);
