@@ -55,6 +55,39 @@ public:
             throw;  // Re-throw the exception
         }
     }
+
+    static void deleteList(int listId)
+    {
+        // Start a new transaction
+        DB::beginTransaction();
+
+        try {
+            QVector<QVariant> values = {listId};
+            DB::statement("DELETE FROM listen WHERE id = ?", values);
+
+            // Commit the transaction
+            DB::commit();
+        } catch (...) {
+            // An error occurred, rollback the transaction
+            DB::rollBack();
+            throw;  // Re-throw the exception
+        }
+    }
+
+    static QVector<List> getAllLists()
+    {
+        QSqlQuery result = DB::select("SELECT * FROM listen");
+
+        QVector<List> lists;
+        while (result.next()) {
+            List list;
+            list.id = result.value("id").toInt();
+            list.name = result.value("name").toString().toStdString();
+            lists.push_back(list);
+        }
+
+        return lists;
+    }
 };
 
 #endif //LIST_H
