@@ -15,7 +15,7 @@ public:
     ~ListWidget() override;
 
     public slots:
-        static void onTodayButtonClicked();
+    static void onTodayButtonClicked();
     static void onImportantButtonClicked();
     static void onInboxButtonClicked();
     void onAddButtonClicked();
@@ -23,11 +23,12 @@ public:
 
 private:
     QWidget* createHeaderWidget();
-    QWidget* createMenuWidget();
-    QPushButton* createMenuButton(const QString& buttonName, const QString& iconPath, QLayout* parent);
-    void refreshListWidget();  // Add this line
+    QWidget* createMenuWidget();private:
+    QVBoxLayout* menuLayout;
+    QVBoxLayout* listLayout;
 
-    QVBoxLayout* listLayout;  // Add this line
+    QPushButton* createMenuButton(const QString& buttonName, const QString& iconPath, QLayout* parent);
+    void refreshListWidget();
 };
 
 #endif //LISTWIDGET_H

@@ -8,6 +8,9 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QInputDialog>
+#include <QDockWidget>
+#include <QScrollArea>
+#include <QMessageBox>
 #include <database/models/list.h>
 
 ListWidget::ListWidget(QWidget* parent) : QWidget(parent)
@@ -15,7 +18,9 @@ ListWidget::ListWidget(QWidget* parent) : QWidget(parent)
     // Create main Widget
     auto* mainWidget = new QWidget(this);
     mainWidget->setStyleSheet("background-color: #283655;");
-    mainWidget->setMinimumSize(QSize(200, 800));  // Increase the minimum size
+    mainWidget->setMinimumSize(QSize(200, 800));
+    mainWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    mainWidget->setMaximumWidth(250);
 
     // Create main layout
     auto* mainLayout = new QVBoxLayout(mainWidget);
@@ -24,17 +29,26 @@ ListWidget::ListWidget(QWidget* parent) : QWidget(parent)
     mainLayout->addWidget(createHeaderWidget());
 
     // Create a widget for "Important, Today and Inbox"
-    auto* menuWidget = createMenuWidget();
-    mainLayout->addWidget(menuWidget);  // Add the menu widget to the main layout
+    auto* menuWidget = new QWidget(this);
+    menuLayout = new QVBoxLayout(menuWidget);
+    menuLayout->setContentsMargins(0, 0, 0, 0);
+    menuLayout->setAlignment(Qt::AlignTop);
+    mainLayout->addWidget(createMenuWidget());
+
+    // Create a scroll area for the list layout
+    auto* scrollArea = new QScrollArea(this);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setFrameShape(QFrame::NoFrame);
+    mainLayout->addWidget(scrollArea);
 
     // Create a widget for the list layout
     auto* listWidget = new QWidget(this);
     listLayout = new QVBoxLayout(listWidget);
     listLayout->setContentsMargins(0, 0, 0, 0);
-    listLayout->setAlignment(Qt::AlignTop);  // Set alignment to top
-    mainLayout->addWidget(listWidget);  // Add the list widget to the main layout
+    listLayout->setAlignment(Qt::AlignTop);
+    scrollArea->setWidget(listWidget);
 
-    refreshListWidget();  // Add this line
+    refreshListWidget();
 
     parent->layout()->addWidget(mainWidget);
 }
@@ -67,21 +81,21 @@ QWidget* ListWidget::createMenuWidget()
 {
     // Create a list widget
     auto* listWidget = new QWidget(this);
-    resize(QSize(110, 600));
+    listWidget->setFixedHeight(90);
 
     // Create a layout for the list widget
     listLayout = new QVBoxLayout(listWidget);
-    listLayout->setContentsMargins(0, 0, 0, 0);
-    listLayout->setAlignment(Qt::AlignTop);  // Set alignment to top
+    listLayout->setContentsMargins(5, 0, 0, 0);
+    listLayout->setAlignment(Qt::AlignTop);
 
     // Create a widget for "Important, Today and Inbox"
     auto* menuWidget = new QWidget(listWidget);
-    menuWidget->setFixedHeight(90);
-    menuWidget->setMinimumWidth(140);
+    menuWidget->setFixedHeight(100);
+    listLayout->addWidget(menuWidget);
 
     // Create a layout for the menu widget
-    auto* menuLayout = new QVBoxLayout(menuWidget);
-    menuLayout->setContentsMargins(10, 10, 10, 10);
+    menuLayout = new QVBoxLayout(menuWidget);
+    menuLayout->setContentsMargins(10, 10, 0, 10);
 
     // Create button for "Important"
     const auto* importantButton = createMenuButton("  IMPORTANT", ":res/images/ImportantIcon.png", menuLayout);
@@ -125,25 +139,22 @@ void ListWidget::refreshListWidget()
         delete item;
     }
 
-    // Create a button for "Add List"
-    auto* addListButton = new QPushButton(this);
-    addListButton->setText("Add List");
-    addListButton->setStyleSheet("border: none; color: #ffffff; font-size: 13px; font-weight: bold;");
-    listLayout->addWidget(addListButton);
-    listLayout->setContentsMargins(10, 10, 10, 10);
-
-    connect(addListButton, &QPushButton::clicked, this, &ListWidget::onAddButtonClicked);
-
     QVector<List> lists = List::getAllLists();
     for (const List& list : lists)
     {
+        // Skip the "Inbox" list
+        if (list.name == "Inbox") {
+            continue;
+        }
+
         auto* listContainer = new QWidget(this);
-        listContainer->setFixedHeight(30);  // Set the height of the list container
+        listContainer->setFixedHeight(30);
         auto* listContainerLayout = new QHBoxLayout(listContainer);
         listContainerLayout->setContentsMargins(0, 0, 0, 0);
         listContainerLayout->setAlignment(Qt::AlignTop);
 
-        auto* listButton = createMenuButton(QString::fromStdString(list.name), "", listContainerLayout);  // Remove the icon
+        auto* listButton = createMenuButton(QString::fromStdString(list.name), "", listContainerLayout);
+
         connect(listButton, &QPushButton::clicked, this, [this, list]()
         {
             // TODO: Implement the behavior when a list button is clicked
@@ -160,6 +171,18 @@ void ListWidget::refreshListWidget()
 
         listLayout->addWidget(listContainer);
     }
+
+    listLayout->setSpacing(5);
+    listLayout->addStretch();
+
+    // Create a button for "Add List"
+    auto* addListButton = new QPushButton(this);
+    addListButton->setText("Add List");
+    addListButton->setStyleSheet("border: none; color: #ffffff; font-size: 13px; font-weight: bold;");
+    listLayout->addWidget(addListButton);
+    listLayout->setContentsMargins(20, 10, 10, 10);
+
+    connect(addListButton, &QPushButton::clicked, this, &ListWidget::onAddButtonClicked);
 }
 
 void ListWidget::onTodayButtonClicked()
@@ -187,10 +210,16 @@ void ListWidget::onAddButtonClicked()
                                              tr("List name:"), QLineEdit::Normal,
                                              "", &ok);
     if (ok && !listName.isEmpty()) {
-        List newList;
-        newList.name = listName.toStdString();
-        newList.save();
-        refreshListWidget();
+        std::string listNameStd = listName.toStdString();
+        if (listNameStd == "Inbox" || List::nameExists(listNameStd)) {
+            // Zeige eine Fehlermeldung an, wenn der Name "Inbox" ist oder bereits existiert
+            QMessageBox::warning(this, tr("Error"), tr("List name already exists or is reserved."));
+        } else {
+            List newList;
+            newList.name = listNameStd;
+            newList.save();
+            refreshListWidget();
+        }
     }
 }
 

@@ -21,6 +21,15 @@ public:
     int id;
     std::string name;
 
+    static int getInboxId()
+    {
+        QSqlQuery result = DB::select("SELECT id FROM listen WHERE name = 'Inbox'");
+        if (result.next()) {
+            return result.value("id").toInt();
+        }
+        return -1;  // Return -1 if the Inbox list does not exist
+    }
+
     static void createTable()
     {
         DB::statement("CREATE TABLE IF NOT EXISTS listen (id INTEGER PRIMARY KEY, name TEXT)");
@@ -62,8 +71,19 @@ public:
         DB::beginTransaction();
 
         try {
-            QVector<QVariant> values = {listId};
-            DB::statement("DELETE FROM listen WHERE id = ?", values);
+            // Get the ID of the Inbox list
+            int inboxId = getInboxId();
+            if (inboxId == -1) {
+                throw std::runtime_error("Inbox list does not exist");
+            }
+
+            // Move all tasks from the list to be deleted to the Inbox list
+            QVector<QVariant> moveValues = {inboxId, listId};
+            DB::statement("UPDATE tasks SET list_id = ? WHERE list_id = ?", moveValues);
+
+            // Delete the list
+            QVector<QVariant> deleteValues = {listId};
+            DB::statement("DELETE FROM listen WHERE id = ?", deleteValues);
 
             // Commit the transaction
             DB::commit();
@@ -72,6 +92,12 @@ public:
             DB::rollBack();
             throw;  // Re-throw the exception
         }
+    }
+
+    static bool nameExists(const std::string& name)
+    {
+        QSqlQuery result = DB::select("SELECT * FROM listen WHERE name = ?", {QString::fromStdString(name)});
+        return result.next();
     }
 
     static QVector<List> getAllLists()

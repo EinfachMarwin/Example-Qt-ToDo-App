@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
     auto* mainWidget = new QWidget(this);
     setCentralWidget(mainWidget);
     // Set minimum size for the central widget
-    mainWidget->setMinimumSize(800, 600);
+    mainWidget->setMinimumSize(800, 800);
 
 
     // Create a main layout for the central widget

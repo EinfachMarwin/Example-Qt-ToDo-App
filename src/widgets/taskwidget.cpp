@@ -11,6 +11,7 @@
 #include <QPushButton>
 #include <QScrollArea>
 #include <QDateEdit>
+#include <QInputDialog>
 
 
 TaskWidget::TaskWidget(QWidget* parent) : QWidget(parent)
@@ -188,8 +189,21 @@ QWidget* TaskWidget::createTaskWidget(const Task& task)
     auto* deadlineEdit = new QDateEdit(task.deadline.empty() ? QDate::currentDate() : QDate::fromString(QString::fromStdString(task.deadline), "yyyy-MM-dd"), taskWidget);
     deadlineEdit->setDisplayFormat("dd.MM.yyyy");
     deadlineEdit->setButtonSymbols(QAbstractSpinBox::NoButtons);
+
+    // Check if the deadline is in the past
+    QDate deadlineDate = QDate::fromString(QString::fromStdString(task.deadline), "yyyy-MM-dd");
+    if (deadlineDate < QDate::currentDate()) {
+        deadlineEdit->setStyleSheet("QDateEdit { color: red; }");
+    }
+
     layout->addWidget(deadlineEdit);
     layout->setAlignment(deadlineEdit, Qt::AlignVCenter);
+
+    // Create an edit button for the task
+    auto* editButton = new QPushButton(tr("Edit"), taskWidget);
+    editButton->setMaximumWidth(50);
+    layout->addWidget(editButton);
+    layout->setAlignment(editButton, Qt::AlignVCenter);
 
     // Create a delete button for the task
     auto* deleteButton = new QPushButton(tr("Delete"), taskWidget);
@@ -211,6 +225,19 @@ QWidget* TaskWidget::createTaskWidget(const Task& task)
     {
         Task::updateTaskDeadline(task.id, date.toString("yyyy-MM-dd").toStdString());
         refreshTaskList();
+    });
+
+    // Connect the edit button's clicked signal to a slot that edits the task
+    connect(editButton, &QPushButton::clicked, this, [this, task, descriptionLabel]()
+    {
+        bool ok;
+        QString newText = QInputDialog::getText(this, tr("Edit Task"),
+                                                tr("Task description:"), QLineEdit::Normal,
+                                                descriptionLabel->text(), &ok);
+        if (ok && !newText.isEmpty()) {
+            Task::updateTaskDescription(task.id, newText.toStdString());
+            refreshTaskList();
+        }
     });
 
     // Connect the delete button's clicked signal to a slot that deletes the task

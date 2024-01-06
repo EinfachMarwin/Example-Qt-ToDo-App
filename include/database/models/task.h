@@ -105,6 +105,24 @@ public:
         }
     }
 
+    static void updateTaskDescription(int taskId, const std::string& description)
+    {
+        // Start a new transaction
+        DB::beginTransaction();
+
+        try {
+            QVector<QVariant> values = {QString::fromStdString(description), taskId};
+            DB::statement("UPDATE tasks SET description = ? WHERE id = ?", values);
+
+            // Commit the transaction
+            DB::commit();
+        } catch (...) {
+            // An error occurred, rollback the transaction
+            DB::rollBack();
+            throw;  // Re-throw the exception
+        }
+    }
+
     static void updateTaskDeadline(int taskId, const std::string& deadline)
     {
         // Start a new transaction
