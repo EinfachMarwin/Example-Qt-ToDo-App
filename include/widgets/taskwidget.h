@@ -1,7 +1,3 @@
-//
-// Created by Marwin Nowak on 26.11.23.
-//
-
 #ifndef TASKWIDGET_H
 #define TASKWIDGET_H
 
@@ -20,9 +16,12 @@ public:
     ~TaskWidget();
 
     void refreshTaskList(int listId);
+    void showTasksForToday();
     QWidget* showTasksForListId(int listId);
     void setListName(const QString& listName);
 
+    void setCurrentListId(int listId);
+    int getCurrentListId() const;
 
     public slots:
         void returnPressed();
@@ -34,6 +33,8 @@ private:
     QLineEdit *addTaskLineEdit;
     QListWidget *taskListWidget;
     QLabel* headerLabel;
+
+    int currentListId;
 };
 
 #endif // TASKWIDGET_H

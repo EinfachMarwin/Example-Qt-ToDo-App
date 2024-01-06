@@ -141,5 +141,23 @@ public:
         }
     }
 
+    static QVector<Task> getAllTasks()
+    {
+        QSqlQuery result = DB::select("SELECT * FROM tasks");
+
+        QVector<Task> tasks;
+        while (result.next()) {
+            Task task;
+            task.id = result.value("id").toInt();
+            task.description = result.value("description").toString().toStdString();
+            task.list_id = result.value("list_id").toInt();
+            task.is_done = result.value("is_done").toBool();
+            task.deadline = result.value("deadline").toString().toStdString();
+            tasks.push_back(task);
+        }
+
+        return tasks;
+    }
+
 };
 #endif //TASK_H

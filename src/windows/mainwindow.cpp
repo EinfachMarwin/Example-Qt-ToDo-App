@@ -21,7 +21,6 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
     // Set minimum size for the central widget
     mainWidget->setMinimumSize(800, 800);
 
-
     // Create a main layout for the central widget
     auto* mainLayout = new QHBoxLayout(mainWidget);
     mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -84,9 +83,14 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
     connect(settingsButton, &QPushButton::clicked, this, &MainWindow::onSettingsButtonClicked);
     connect(tasksButton, &QPushButton::clicked, this, &MainWindow::onTasksButtonClicked);
 
-    // Addd the list widget and the task widget to the main layout
+    // Create a ListWidget and a TaskWidget
     auto* listWidget = new ListWidget(mainWidget);
     auto* taskWidget = new TaskWidget(mainWidget);
+
+    // Set the TaskWidget for the ListWidget
+    listWidget->setTaskWidget(taskWidget);
+
+    // Add the ListWidget and the TaskWidget to the main layout
     mainLayout->addWidget(listWidget);
     mainLayout->addWidget(taskWidget);
 

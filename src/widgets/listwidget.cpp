@@ -12,6 +12,7 @@
 #include <QScrollArea>
 #include <QMessageBox>
 #include <database/models/list.h>
+#include <widgets/taskwidget.h>
 
 ListWidget::ListWidget(QWidget* parent) : QWidget(parent)
 {
@@ -159,7 +160,8 @@ void ListWidget::refreshListWidget()
 
         connect(listButton, &QPushButton::clicked, this, [this, list]()
         {
-            // TODO: Implement the behavior when a list button is clicked
+            getTaskWidget()->refreshTaskList(list.id);
+            getTaskWidget()->setListName(QString::fromStdString(list.name));
         });
 
         auto* deleteButton = new QPushButton(this);
@@ -187,16 +189,40 @@ void ListWidget::refreshListWidget()
     connect(addListButton, &QPushButton::clicked, this, &ListWidget::onAddButtonClicked);
 }
 
-void ListWidget::onTodayButtonClicked()
-{
-    // TODO: Implement this method
-    qDebug() << "Today button clicked";
-}
-
 void ListWidget::onInboxButtonClicked()
 {
-    //TODO: Implement this method
-    qDebug() << "Inbox button clicked";
+    // Get the ID of the Inbox list
+    int inboxId = List::getInboxId();
+    if (inboxId == -1) {
+        qDebug() << "Inbox list does not exist";
+        return;
+    }
+
+    // Get the TaskWidget
+    auto* taskWidget = getTaskWidget();
+    if (!taskWidget) {
+        qDebug() << "TaskWidget is not set";
+        return;
+    }
+
+    // Refresh the task list for the Inbox list
+    taskWidget->refreshTaskList(inboxId);
+}
+
+void ListWidget::onTodayButtonClicked()
+{
+    // Get the TaskWidget
+    auto* taskWidget = getTaskWidget();
+    if (!taskWidget) {
+        qDebug() << "TaskWidget is not set";
+        return;
+    }
+
+    // Show tasks for today
+    taskWidget->showTasksForToday();
+
+    // Set the list name to "Today"
+    taskWidget->setListName("Today");
 }
 
 void ListWidget::onAddButtonClicked()
@@ -223,5 +249,14 @@ void ListWidget::onDeleteListButtonClicked(int listId)
     List::deleteList(listId);
     refreshListWidget();
 }
+
+void ListWidget::setTaskWidget(TaskWidget* widget) {
+    taskWidget = widget;
+}
+
+TaskWidget* ListWidget::getTaskWidget() const {
+    return taskWidget;
+}
+
 // IMPORTANT: Do not delete the following line; otherwise, the program will crash.
 #include "widgets/moc_listwidget.cpp"

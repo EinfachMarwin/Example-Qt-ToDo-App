@@ -98,6 +98,9 @@ void TaskWidget::refreshTaskList(int listId)
         return;
     }
 
+    // Set the current list ID
+    setCurrentListId(listId);
+
     // Update the list name in the header label
     setListName(listName);
 
@@ -152,13 +155,18 @@ void TaskWidget::returnPressed()
     qDebug() << "Task name";
 
     if (!taskName.trimmed().isEmpty()) {
+        // Get the current list ID
+        int listId = getCurrentListId();
+
         // Create a new task
         Task task;
-        qDebug() << "Task created";
         task.description = taskName.toStdString();
         task.is_done = false;
-        task.list_id = 1;
-        qDebug() << "Task description";
+        // If the list ID is -1, set it to 1 (Inbox)
+        task.list_id = listId == -1 ? 1 : listId;
+
+        // Refresh the task list
+        refreshTaskList(task.list_id);
 
         // Save the task in the database
         task.save();
@@ -184,6 +192,9 @@ QWidget* TaskWidget::showTasksForListId(int listId)
         QWidget* taskWidget = createTaskWidget(task);
         layout->addWidget(taskWidget);
     }
+
+    setCurrentListId(listId);
+
     return containerWidget;
 }
 
@@ -284,6 +295,74 @@ void TaskWidget::setListName(const QString& listName)
 {
     headerLabel->setText(listName);
 }
+
+void TaskWidget::showTasksForToday()
+{
+    // Remove all items from the task list widget
+    QLayout* layout = taskListWidget->layout();
+    QLayoutItem* item;
+    while ((item = layout->takeAt(0)) != nullptr)
+    {
+        // Delete the widget
+        if (item->widget()) {
+            item->widget()->deleteLater();
+        }
+        delete item;
+    }
+
+    // Get today's date
+    QDate today = QDate::currentDate();
+
+    setCurrentListId(-1);
+
+    // Get all tasks
+    QVector<Task> allTasks = Task::getAllTasks();
+
+    // Create a scroll area
+    auto* scrollArea = new QScrollArea;
+    scrollArea->setWidgetResizable(true);
+
+    // Create a widget for the scroll area
+    auto* scrollWidget = new QWidget;
+    auto* scrollLayout = new QVBoxLayout(scrollWidget);
+    scrollLayout->setAlignment(Qt::AlignTop);
+
+    for (const Task& task : allTasks)
+    {
+        // Parse the task deadline
+        QDate deadline = QDate::fromString(QString::fromStdString(task.deadline), "yyyy-MM-dd");
+
+        // Check if the task deadline is today or in the past
+        if (deadline <= today)
+        {
+            // Create a widget for the task and add it to the task list widget
+            QWidget* taskWidget = createTaskWidget(task);
+            scrollLayout->addWidget(taskWidget);
+        }
+    }
+
+    // Set the widget for the scroll area
+    scrollArea->setWidget(scrollWidget);
+
+    // Add the scroll area to the task list widget
+    taskListWidget->layout()->addWidget(scrollArea);
+    taskListWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    taskListWidget->layout()->setAlignment(Qt::AlignTop);
+    taskListWidget->layout()->setContentsMargins(0, 0, 0, 0);
+    taskListWidget->layout()->setSpacing(20);
+    taskListWidget->layout()->update();
+    taskListWidget->layout()->activate();
+}
+
+void TaskWidget::setCurrentListId(int listId) {
+    currentListId = listId;
+}
+
+int TaskWidget::getCurrentListId() const {
+    return currentListId;
+}
+
+
 
 // IMPORTANT: Do not delete the following line; otherwise, the program will crash.
 #include "widgets/moc_taskwidget.cpp"
