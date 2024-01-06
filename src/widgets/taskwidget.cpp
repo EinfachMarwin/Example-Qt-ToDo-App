@@ -12,6 +12,7 @@
 #include <QScrollArea>
 #include <QDateEdit>
 #include <QInputDialog>
+#include <database/models/list.h>
 
 
 TaskWidget::TaskWidget(QWidget* parent) : QWidget(parent)
@@ -29,11 +30,12 @@ TaskWidget::TaskWidget(QWidget* parent) : QWidget(parent)
 
     QWidget* headerWidget = createHeaderWidget();
     mainLayout->addWidget(headerWidget);
+    mainLayout->addSpacing(20);
 
     // Add the task list widget to the layout right after the header widget
     mainLayout->addWidget(taskListWidget);
 
-    refreshTaskList();
+    refreshTaskList(1);
 
     parent->layout()->addWidget(mainWidget);
 }
@@ -59,6 +61,7 @@ QWidget* TaskWidget::createHeaderWidget()
     headerLabel->setText("<LISTNAME HERE>");
     headerLabel->setStyleSheet("color: #1e1f26; font-size: 20px; font-weight: bold;");
     headerLayout->addWidget(headerLabel);
+    headerLayout->addSpacing(8);
 
     // Create line edit to add new tasks
     addTaskLineEdit = new QLineEdit(this);
@@ -75,8 +78,29 @@ QWidget* TaskWidget::createHeaderWidget()
     return headerWidget;
 }
 
-void TaskWidget::refreshTaskList()
+void TaskWidget::refreshTaskList(int listId)
 {
+    // Check if the list exists
+    QVector<List> lists = List::getAllLists();
+    bool listExists = false;
+    QString listName;
+    for (const List& list : lists)
+    {
+        if (list.id == listId) {
+            listExists = true;
+            listName = QString::fromStdString(list.name);
+            break;
+        }
+    }
+
+    if (!listExists) {
+        qDebug() << "List with ID " << listId << " does not exist";
+        return;
+    }
+
+    // Update the list name in the header label
+    setListName(listName);
+
     // Remove all items from the task list widget
     QLayout* layout = taskListWidget->layout();
     QLayoutItem* item;
@@ -89,7 +113,7 @@ void TaskWidget::refreshTaskList()
         delete item;
     }
 
-    QVector<Task> tasks = Task::getTasksByListId(1);
+    QVector<Task> tasks = Task::getTasksByListId(listId);
     qDebug() << "Number of tasks fetched from database: " << tasks.size();
 
     // Create a scroll area
@@ -141,7 +165,7 @@ void TaskWidget::returnPressed()
         qDebug() << "Task saved";
 
         // Refresh the task list
-        refreshTaskList();
+        refreshTaskList(task.list_id);
     }
 
     // Clear the line edit
@@ -149,12 +173,12 @@ void TaskWidget::returnPressed()
     qDebug() << "Line edit cleared";
 }
 
-QWidget* TaskWidget::showTasksForListId1()
+QWidget* TaskWidget::showTasksForListId(int listId)
 {
     auto* containerWidget = new QWidget(this);
     auto* layout = new QVBoxLayout(containerWidget);
 
-    QVector<Task> tasks = Task::getTasksByListId(1);
+    QVector<Task> tasks = Task::getTasksByListId(listId);
     for (const Task& task : tasks)
     {
         QWidget* taskWidget = createTaskWidget(task);
@@ -200,13 +224,19 @@ QWidget* TaskWidget::createTaskWidget(const Task& task)
     layout->setAlignment(deadlineEdit, Qt::AlignVCenter);
 
     // Create an edit button for the task
-    auto* editButton = new QPushButton(tr("Edit"), taskWidget);
+    auto* editButton = new QPushButton(taskWidget);
+    editButton->setIcon(QIcon(":res/images/EditIcon.png"));  // Set the icon
+    editButton->setIconSize(QSize(24, 24));  // Set the icon size
+    editButton->setStyleSheet("border: none; background-color: #ffffff;");  // Set the style
     editButton->setMaximumWidth(50);
     layout->addWidget(editButton);
     layout->setAlignment(editButton, Qt::AlignVCenter);
 
     // Create a delete button for the task
-    auto* deleteButton = new QPushButton(tr("Delete"), taskWidget);
+    auto* deleteButton = new QPushButton(taskWidget);
+    deleteButton->setIcon(QIcon(":res/images/DeleteIcon.png"));  // Set the icon
+    deleteButton->setIconSize(QSize(24, 24));  // Set the icon size
+    deleteButton->setStyleSheet("border: none; background-color: #ffffff;");  // Set the style
     deleteButton->setMaximumWidth(50);
     layout->addWidget(deleteButton);
     layout->setAlignment(deleteButton, Qt::AlignVCenter);
@@ -216,7 +246,7 @@ QWidget* TaskWidget::createTaskWidget(const Task& task)
     {
         if (state == Qt::Checked) {
             Task::deleteTask(task.id);
-            refreshTaskList();
+            refreshTaskList(task.list_id);
         }
     });
 
@@ -224,7 +254,7 @@ QWidget* TaskWidget::createTaskWidget(const Task& task)
     connect(deadlineEdit, &QDateEdit::dateChanged, this, [this, task](const QDate& date)
     {
         Task::updateTaskDeadline(task.id, date.toString("yyyy-MM-dd").toStdString());
-        refreshTaskList();
+        refreshTaskList(task.list_id);
     });
 
     // Connect the edit button's clicked signal to a slot that edits the task
@@ -236,7 +266,7 @@ QWidget* TaskWidget::createTaskWidget(const Task& task)
                                                 descriptionLabel->text(), &ok);
         if (ok && !newText.isEmpty()) {
             Task::updateTaskDescription(task.id, newText.toStdString());
-            refreshTaskList();
+            refreshTaskList(task.list_id);
         }
     });
 
@@ -244,7 +274,7 @@ QWidget* TaskWidget::createTaskWidget(const Task& task)
     connect(deleteButton, &QPushButton::clicked, this, [this, task]()
     {
         Task::deleteTask(task.id);
-        refreshTaskList();
+        refreshTaskList(task.list_id);
     });
 
     return taskWidget;

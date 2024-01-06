@@ -16,7 +16,6 @@ public:
 
     public slots:
     static void onTodayButtonClicked();
-    static void onImportantButtonClicked();
     static void onInboxButtonClicked();
     void onAddButtonClicked();
     void onDeleteListButtonClicked(int listId);

@@ -17,11 +17,12 @@ class TaskWidget : public QWidget
 
 public:
     explicit TaskWidget(QWidget* parent = nullptr);
-    ~TaskWidget() override;
+    ~TaskWidget();
 
-    QWidget* showTasksForListId1();
+    void refreshTaskList(int listId);
+    QWidget* showTasksForListId(int listId);
     void setListName(const QString& listName);
-    void refreshTaskList();
+
 
     public slots:
         void returnPressed();

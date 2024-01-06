@@ -35,6 +35,12 @@ ListWidget::ListWidget(QWidget* parent) : QWidget(parent)
     menuLayout->setAlignment(Qt::AlignTop);
     mainLayout->addWidget(createMenuWidget());
 
+    // Add a separator line
+    auto* line = new QFrame(this);
+    line->setFrameShape(QFrame::HLine);
+    line->setFrameShadow(QFrame::Sunken);
+    mainLayout->addWidget(line);
+
     // Create a scroll area for the list layout
     auto* scrollArea = new QScrollArea(this);
     scrollArea->setWidgetResizable(true);
@@ -65,7 +71,7 @@ QWidget* ListWidget::createHeaderWidget()
 
     // Create a layout for the header widget
     auto* headerLayout = new QHBoxLayout(headerWidget);
-    headerLayout->setContentsMargins(5, 0, 0, 0);
+    headerLayout->setContentsMargins(5, 10, 0, 0);
 
     // Create a label for the header widget
     auto* headerLabel = new QLabel(headerWidget);
@@ -97,15 +103,11 @@ QWidget* ListWidget::createMenuWidget()
     menuLayout = new QVBoxLayout(menuWidget);
     menuLayout->setContentsMargins(10, 10, 0, 10);
 
-    // Create button for "Important"
-    const auto* importantButton = createMenuButton("  IMPORTANT", ":res/images/ImportantIcon.png", menuLayout);
     // Create button for "Today"
     const auto* todayButton = createMenuButton("  TODAY", ":res/images/TodayIcon.png", menuLayout);
     // Create button for "Inbox"
     const auto* inboxButton = createMenuButton("  INBOX", ":res/images/InboxIcon.png", menuLayout);
 
-    // Connect the buttons to the slots
-    connect(importantButton, &QPushButton::clicked, this, &ListWidget::onImportantButtonClicked);
     connect(todayButton, &QPushButton::clicked, this, &ListWidget::onTodayButtonClicked);
     connect(inboxButton, &QPushButton::clicked, this, &ListWidget::onInboxButtonClicked);
 
@@ -172,7 +174,7 @@ void ListWidget::refreshListWidget()
         listLayout->addWidget(listContainer);
     }
 
-    listLayout->setSpacing(5);
+    listLayout->setSpacing(2);
     listLayout->addStretch();
 
     // Create a button for "Add List"
@@ -191,12 +193,6 @@ void ListWidget::onTodayButtonClicked()
     qDebug() << "Today button clicked";
 }
 
-void ListWidget::onImportantButtonClicked()
-{
-    //TODO: Implement this method
-    qDebug() << "Important button clicked";
-}
-
 void ListWidget::onInboxButtonClicked()
 {
     //TODO: Implement this method
@@ -212,7 +208,6 @@ void ListWidget::onAddButtonClicked()
     if (ok && !listName.isEmpty()) {
         std::string listNameStd = listName.toStdString();
         if (listNameStd == "Inbox" || List::nameExists(listNameStd)) {
-            // Zeige eine Fehlermeldung an, wenn der Name "Inbox" ist oder bereits existiert
             QMessageBox::warning(this, tr("Error"), tr("List name already exists or is reserved."));
         } else {
             List newList;

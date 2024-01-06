@@ -91,7 +91,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
     mainLayout->addWidget(taskWidget);
 
     // Open the Inbox list and set the name
-    taskWidget->showTasksForListId1();
+    taskWidget->showTasksForListId(1);
     taskWidget->setListName("Inbox");
 }
 
