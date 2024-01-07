@@ -248,6 +248,7 @@ void ListWidget::onDeleteListButtonClicked(int listId)
 {
     List::deleteList(listId);
     refreshListWidget();
+    onInboxButtonClicked();
 }
 
 void ListWidget::setTaskWidget(TaskWidget* widget) {

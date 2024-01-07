@@ -10,6 +10,7 @@
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QFile>
+#include <QMessageBox>
 #include <QTextStream>
 #include <QProcess>
 #include <QTranslator>
@@ -110,7 +111,30 @@ SettingsWindow::~SettingsWindow()
 
 void SettingsWindow::closeSettings()
 {
-    qDebug() << "close button clicked";
+    // Get the selected language from the dropdown
+    QString selectedLanguage = languageDropdown->currentText();
+
+    // Load the current language from the configuration file
+    QString currentLanguage = loadLanguageSetting();
+
+    // Check if the selected language is different from the current language
+    if (selectedLanguage != currentLanguage) {
+        // Create a message box to ask the user if they want to save the changes
+        QMessageBox messageBox;
+        messageBox.setWindowTitle(tr("Save changes?"));
+        messageBox.setText(tr("The language has been changed. Do you want to save the changes?"));
+        messageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        messageBox.setDefaultButton(QMessageBox::Yes);
+        int response = messageBox.exec();
+
+        // If the user clicked "Yes", save the changes
+        if (response == QMessageBox::Yes) {
+            saveSettings();
+        }
+    }
+
+    // Close the settings window
+    this->close();
 }
 
 void SettingsWindow::changeLanguage(const QString& language)
@@ -147,6 +171,25 @@ void SettingsWindow::saveLanguageSetting(const QString& language)
     configFile.close();
 
     qDebug() << "Language setting saved";
+}
+
+QString SettingsWindow::loadLanguageSetting()
+{
+    // Open the configuration file
+    QFile configFile("config.ini");
+    if (!configFile.open(QIODevice::ReadOnly)) {
+        qWarning("Could not open config file for reading");
+        return "en_EN";  // Return default language if config file does not exist
+    }
+
+    // Read the selected language from the configuration file
+    QTextStream in(&configFile);
+    QString language = in.readLine().split("=")[1];
+
+    configFile.close();
+
+    qDebug() << "Language setting loaded: " << language;
+    return language;
 }
 
 void SettingsWindow::saveSettings()

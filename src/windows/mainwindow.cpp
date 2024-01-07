@@ -36,8 +36,6 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
     auto* sidebarLayout = new QVBoxLayout(sidebarWidget);
     sidebarLayout->setContentsMargins(2, 2, 2, 15);
 
-    //TODO Change appearance of the tooltips
-    //TODO Error handling for Image loading
     // Create a label for the logo in the sidebar
     const QPixmap appLogo(":res/images/LogoToDoAppTransparent.png");
     const QPixmap scaledAppLogo = appLogo.scaled(48, 48, Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -47,8 +45,6 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
     sidebarLayout->addWidget(logoLabel);
     sidebarLayout->setAlignment(logoLabel, Qt::AlignCenter);
 
-    //TODO add hover effect to the buttons
-    //TODO add click effect to the buttons
     // Create a button for the Tasks Window in the sidebar
     auto* tasksButton = new QPushButton(this);
     tasksButton->setStyleSheet("border: none; background-color: #1e1f26;");

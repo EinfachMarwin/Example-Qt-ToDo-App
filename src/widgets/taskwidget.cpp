@@ -30,7 +30,7 @@ TaskWidget::TaskWidget(QWidget* parent) : QWidget(parent)
 
     QWidget* headerWidget = createHeaderWidget();
     mainLayout->addWidget(headerWidget);
-    mainLayout->addSpacing(20);
+    mainLayout->addSpacing(21);
 
     // Add the task list widget to the layout right after the header widget
     mainLayout->addWidget(taskListWidget);
@@ -78,32 +78,8 @@ QWidget* TaskWidget::createHeaderWidget()
     return headerWidget;
 }
 
-void TaskWidget::refreshTaskList(int listId)
+void TaskWidget::updateTaskList(const QVector<Task>& tasks)
 {
-    // Check if the list exists
-    QVector<List> lists = List::getAllLists();
-    bool listExists = false;
-    QString listName;
-    for (const List& list : lists)
-    {
-        if (list.id == listId) {
-            listExists = true;
-            listName = QString::fromStdString(list.name);
-            break;
-        }
-    }
-
-    if (!listExists) {
-        qDebug() << "List with ID " << listId << " does not exist";
-        return;
-    }
-
-    // Set the current list ID
-    setCurrentListId(listId);
-
-    // Update the list name in the header label
-    setListName(listName);
-
     // Remove all items from the task list widget
     QLayout* layout = taskListWidget->layout();
     QLayoutItem* item;
@@ -115,9 +91,6 @@ void TaskWidget::refreshTaskList(int listId)
         }
         delete item;
     }
-
-    QVector<Task> tasks = Task::getTasksByListId(listId);
-    qDebug() << "Number of tasks fetched from database: " << tasks.size();
 
     // Create a scroll area
     auto* scrollArea = new QScrollArea;
@@ -146,6 +119,70 @@ void TaskWidget::refreshTaskList(int listId)
     taskListWidget->layout()->setSpacing(20);
     taskListWidget->layout()->update();
     taskListWidget->layout()->activate();
+}
+
+void TaskWidget::refreshTaskList(int listId)
+{
+    // Check if the list exists
+    QVector<List> lists = List::getAllLists();
+    bool listExists = false;
+    QString listName;
+    for (const List& list : lists)
+    {
+        if (list.id == listId) {
+            listExists = true;
+            listName = QString::fromStdString(list.name);
+            break;
+        }
+    }
+
+    if (!listExists) {
+        qDebug() << "List with ID " << listId << " does not exist";
+        return;
+    }
+
+    // Set the current list ID
+    setCurrentListId(listId);
+
+    // Update the list name in the header label
+    setListName(listName);
+
+    // Get tasks for the list
+    QVector<Task> tasks = Task::getTasksByListId(listId);
+
+    // Update the task list
+    updateTaskList(tasks);
+}
+
+void TaskWidget::showTasksForToday()
+{
+    // Get today's date
+    QDate today = QDate::currentDate();
+
+    setCurrentListId(-1);
+
+    // Get all tasks
+    QVector<Task> allTasks = Task::getAllTasks();
+
+    // Filter tasks for today
+    QVector<Task> tasksForToday;
+    for (const Task& task : allTasks)
+    {
+        // Parse the task deadline
+        QDate deadline = QDate::fromString(QString::fromStdString(task.deadline), "yyyy-MM-dd");
+
+        // Check if the task deadline is today or in the past
+        if (deadline <= today)
+        {
+            tasksForToday.append(task);
+        }
+    }
+
+    // Update the task list
+    updateTaskList(tasksForToday);
+
+    // Set the list name to "Today"
+    setListName("Today");
 }
 
 void TaskWidget::returnPressed()
@@ -236,18 +273,18 @@ QWidget* TaskWidget::createTaskWidget(const Task& task)
 
     // Create an edit button for the task
     auto* editButton = new QPushButton(taskWidget);
-    editButton->setIcon(QIcon(":res/images/EditIcon.png"));  // Set the icon
-    editButton->setIconSize(QSize(24, 24));  // Set the icon size
-    editButton->setStyleSheet("border: none; background-color: #ffffff;");  // Set the style
+    editButton->setIcon(QIcon(":res/images/EditIcon.png"));
+    editButton->setIconSize(QSize(24, 24));
+    editButton->setStyleSheet("border: none; background-color: #ffffff;");
     editButton->setMaximumWidth(50);
     layout->addWidget(editButton);
     layout->setAlignment(editButton, Qt::AlignVCenter);
 
     // Create a delete button for the task
     auto* deleteButton = new QPushButton(taskWidget);
-    deleteButton->setIcon(QIcon(":res/images/DeleteIcon.png"));  // Set the icon
-    deleteButton->setIconSize(QSize(24, 24));  // Set the icon size
-    deleteButton->setStyleSheet("border: none; background-color: #ffffff;");  // Set the style
+    deleteButton->setIcon(QIcon(":res/images/DeleteIcon.png"));
+    deleteButton->setIconSize(QSize(24, 24));
+    deleteButton->setStyleSheet("border: none; background-color: #ffffff;");
     deleteButton->setMaximumWidth(50);
     layout->addWidget(deleteButton);
     layout->setAlignment(deleteButton, Qt::AlignVCenter);
@@ -294,64 +331,6 @@ QWidget* TaskWidget::createTaskWidget(const Task& task)
 void TaskWidget::setListName(const QString& listName)
 {
     headerLabel->setText(listName);
-}
-
-void TaskWidget::showTasksForToday()
-{
-    // Remove all items from the task list widget
-    QLayout* layout = taskListWidget->layout();
-    QLayoutItem* item;
-    while ((item = layout->takeAt(0)) != nullptr)
-    {
-        // Delete the widget
-        if (item->widget()) {
-            item->widget()->deleteLater();
-        }
-        delete item;
-    }
-
-    // Get today's date
-    QDate today = QDate::currentDate();
-
-    setCurrentListId(-1);
-
-    // Get all tasks
-    QVector<Task> allTasks = Task::getAllTasks();
-
-    // Create a scroll area
-    auto* scrollArea = new QScrollArea;
-    scrollArea->setWidgetResizable(true);
-
-    // Create a widget for the scroll area
-    auto* scrollWidget = new QWidget;
-    auto* scrollLayout = new QVBoxLayout(scrollWidget);
-    scrollLayout->setAlignment(Qt::AlignTop);
-
-    for (const Task& task : allTasks)
-    {
-        // Parse the task deadline
-        QDate deadline = QDate::fromString(QString::fromStdString(task.deadline), "yyyy-MM-dd");
-
-        // Check if the task deadline is today or in the past
-        if (deadline <= today)
-        {
-            // Create a widget for the task and add it to the task list widget
-            QWidget* taskWidget = createTaskWidget(task);
-            scrollLayout->addWidget(taskWidget);
-        }
-    }
-
-    // Set the widget for the scroll area
-    scrollArea->setWidget(scrollWidget);
-
-    // Add the scroll area to the task list widget
-    taskListWidget->layout()->addWidget(scrollArea);
-    taskListWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    taskListWidget->layout()->setAlignment(Qt::AlignTop);
-    taskListWidget->layout()->setContentsMargins(0, 0, 0, 0);
-    taskListWidget->layout()->setSpacing(20);
-    taskListWidget->layout()->update();
-    taskListWidget->layout()->activate();
 }
 
 void TaskWidget::setCurrentListId(int listId) {

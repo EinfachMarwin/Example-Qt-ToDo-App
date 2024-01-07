@@ -18,10 +18,12 @@ public:
     explicit SettingsWindow(QWidget* parent = nullptr);
     ~SettingsWindow() override;
 
+    QString loadLanguageSetting();
+
     private slots:
         void saveSettings();
-    void reloadApplication();
-    void closeSettings();
+        void reloadApplication();
+        void closeSettings();
 
 private:
     void changeLanguage(const QString& language);

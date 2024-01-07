@@ -9,7 +9,7 @@ using Orm::DB;
 
 using ConfigUtils = Orm::Utils::Configuration;
 
-using namespace Orm::Constants; // NOLINT(google-build-using-namespace)
+using namespace Orm::Constants;
 
 DatabaseManager::DatabaseManager(const QString &databasePath)
 {

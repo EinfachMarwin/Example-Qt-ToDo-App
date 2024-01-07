@@ -1,6 +1,6 @@
 # ToDo-Applikation
 
----
+
 # Table of Contents
 1. [Introduction](#introduction)
 3. [Installation](#installation)
@@ -12,7 +12,7 @@
 5. [App Color Scheme](#app-color-scheme)
 6. [References](#references)
 
----
+
 
 # Introduction
 The ToDo List application is a simple and intuitive task management tool that allows users to create, 
@@ -20,7 +20,7 @@ edit, and delete tasks. The application is designed to be user-friendly and easy
 The application is built using C++ and Qt, and is compatible with Windows, macOS, and Linux operating systems.
 For Data Storage, the application uses a SQLite database to store user data locally on the user's device.
 
----
+![img.png](res/images/img.png)
 
 # Installation
 At the moment, the ToDo List application is not available for download as a standalone executable. We are working on making the application available for download in the near future. In the meantime, you can download the source code and build the application yourself. See the instructions below for your operating system.
@@ -76,7 +76,7 @@ Unfortunately, the ToDo List can´t be built on macOS at the moment. The reason 
 ## Troubleshooting
 If you encounter any issues during the installation or configuration, please check that all paths are set correctly and that the required dependencies have been installed via vcpkg. If you continue to experience problems, do not hesitate to create an issue in the project repository.
 
----
+
 
 # App Color Scheme
 The ToDo List application showcases a sleek and contemporary design, utilizing a harmonious palette of cool tones that underpin its modern and user-friendly interface. The color scheme is implemented throughout the app to ensure visual consistency and a seamless user experience.

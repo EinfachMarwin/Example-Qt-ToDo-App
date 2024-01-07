@@ -15,6 +15,7 @@ public:
     explicit TaskWidget(QWidget* parent = nullptr);
     ~TaskWidget();
 
+    void updateTaskList(const QVector<Task>& tasks);
     void refreshTaskList(int listId);
     void showTasksForToday();
     QWidget* showTasksForListId(int listId);
