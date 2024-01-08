@@ -1,8 +1,6 @@
 #ifndef LISTWIDGET_H
 #define LISTWIDGET_H
 
-#include <QWidget>
-#include <QListWidget>
 #include <QPushButton>
 #include <QVBoxLayout>
 
@@ -18,11 +16,11 @@ public:
 
     public slots:
         void onAddButtonClicked();
-    void onDeleteListButtonClicked(int listId);
-    void onInboxButtonClicked();
-    void onTodayButtonClicked();
-    void setTaskWidget(TaskWidget* widget);
-    TaskWidget* getTaskWidget() const;
+        void onDeleteListButtonClicked(int listId);
+        void onInboxButtonClicked();
+        void onTodayButtonClicked();
+        void setTaskWidget(TaskWidget* widget);
+        TaskWidget* getTaskWidget() const;
 
 private:
     TaskWidget* taskWidget;

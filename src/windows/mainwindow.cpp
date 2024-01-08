@@ -8,17 +8,15 @@
 #include <widgets/taskwidget.h>
 #include <windows/settingswindow.h>
 
-#include "dbmanager.h"
-
 // Constructor for the main window
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
 {
+    // Set the window title
     setWindowTitle("ToDo List");
 
     // Create a central widget
     auto* mainWidget = new QWidget(this);
     setCentralWidget(mainWidget);
-    // Set minimum size for the central widget
     mainWidget->setMinimumSize(800, 800);
 
     // Create a main layout for the central widget

@@ -18,7 +18,8 @@ public:
     explicit SettingsWindow(QWidget* parent = nullptr);
     ~SettingsWindow() override;
 
-    QString loadLanguageSetting();
+    int loadDefaultDeadlineSetting();
+    void saveDefaultDeadlineSetting(int defaultDeadline);
 
     private slots:
         void saveSettings();
@@ -26,15 +27,12 @@ public:
         void closeSettings();
 
 private:
-    void changeLanguage(const QString& language);
-    void saveLanguageSetting(const QString& language);
     QPushButton* createButton(const QString& text);
-    QComboBox* createLanguageDropdown();
 
     QPushButton* applyButton;
     QPushButton* okButton;
     QPushButton* cancelButton;
-    QComboBox* languageDropdown;
+    QComboBox* defaultDeadlineDropdown;
 };
 
-#endif //SETTINGSWINDOW_H
+#endif // SETTINGSWINDOW_H

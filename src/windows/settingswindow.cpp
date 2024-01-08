@@ -4,7 +4,6 @@
 
 #include "windows/settingswindow.h"
 
-#include <QLabel>
 #include <QComboBox>
 #include <qcoreapplication.h>
 #include <QPushButton>
@@ -13,7 +12,6 @@
 #include <QMessageBox>
 #include <QTextStream>
 #include <QProcess>
-#include <QTranslator>
 #include <windows/mainwindow.h>
 
 SettingsWindow::SettingsWindow(QWidget* parent) : QDialog(parent)
@@ -52,31 +50,33 @@ SettingsWindow::SettingsWindow(QWidget* parent) : QDialog(parent)
     // Add the header widget to the main layout
     mainLayout->addWidget(headerWidget);
 
-    // Create a widget for language selection
-    auto* languageWidget = new QWidget(mainWidget);
-    auto* languageLayout = new QHBoxLayout(languageWidget);
-    languageLayout->setContentsMargins(20, 20, 20, 20);
+    // Create a widget for default deadline selection
+    auto* defaultDeadlineWidget = new QWidget(mainWidget);
+    auto* defaultDeadlineLayout = new QHBoxLayout(defaultDeadlineWidget);
+    defaultDeadlineLayout->setContentsMargins(20, 20, 20, 20);
 
-    // Create a label for language selection
-    auto* languageLabel = new QLabel(languageWidget);
-    languageLabel->setText(tr("Language"));
-    languageLayout->addWidget(languageLabel);
+    // Create a label for default deadline selection
+    auto* defaultDeadlineLabel = new QLabel(defaultDeadlineWidget);
+    defaultDeadlineLabel->setText(tr("Standard Deadline"));
+    defaultDeadlineLayout->addWidget(defaultDeadlineLabel);
 
-    // Initialize languageDropdown
-    languageDropdown = new QComboBox(languageWidget);
-    languageDropdown->addItem(tr("en_EN"));
-    languageDropdown->addItem(tr("de_DE"));
+    // Initialize defaultDeadlineDropdown
+    defaultDeadlineDropdown = new QComboBox(defaultDeadlineWidget);
+    defaultDeadlineDropdown->addItem(tr("Same day"));
+    defaultDeadlineDropdown->addItem(tr("In three days"));
+    defaultDeadlineDropdown->addItem(tr("In one week"));
 
-    languageLayout->addWidget(languageDropdown);
-
-    // Connect the signal for language change
-    connect(languageDropdown, QOverload<int>::of(&QComboBox::currentIndexChanged),
-        [this](int index){
-            // Get the selected language
-            QString selectedLanguage = languageDropdown->itemText(index);
-        });
-
-    mainLayout->addWidget(languageWidget);
+    // Load the selected default deadline
+    int defaultDeadlineDays = loadDefaultDeadlineSetting();
+    QString defaultDeadline = QString::number(defaultDeadlineDays);
+    int index = defaultDeadlineDropdown->findText(defaultDeadline);
+    if (index != -1) {
+        defaultDeadlineDropdown->setCurrentIndex(index);
+    }
+    // Add the default deadline dropdown to the layout
+    defaultDeadlineLayout->addWidget(defaultDeadlineDropdown);
+    mainLayout->addWidget(defaultDeadlineWidget);
+    mainLayout->addStretch();
 
     // Create a widget for the buttons
     auto* buttonsWidget = new QWidget(this);
@@ -111,18 +111,16 @@ SettingsWindow::~SettingsWindow()
 
 void SettingsWindow::closeSettings()
 {
-    // Get the selected language from the dropdown
-    QString selectedLanguage = languageDropdown->currentText();
+    // Get the selected default deadline from the dropdown
+    QString selectedDefaultDeadlineText = defaultDeadlineDropdown->currentText();
+    int selectedDefaultDeadline = 0;
 
-    // Load the current language from the configuration file
-    QString currentLanguage = loadLanguageSetting();
-
-    // Check if the selected language is different from the current language
-    if (selectedLanguage != currentLanguage) {
+    // Check if the selected default deadline is different from the current default deadline
+    if (selectedDefaultDeadline != loadDefaultDeadlineSetting()) {
         // Create a message box to ask the user if they want to save the changes
         QMessageBox messageBox;
         messageBox.setWindowTitle(tr("Save changes?"));
-        messageBox.setText(tr("The language has been changed. Do you want to save the changes?"));
+        messageBox.setText(tr("The default deadline has been changed. Do you want to save the changes?"));
         messageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         messageBox.setDefaultButton(QMessageBox::Yes);
         int response = messageBox.exec();
@@ -137,25 +135,73 @@ void SettingsWindow::closeSettings()
     this->close();
 }
 
-void SettingsWindow::changeLanguage(const QString& language)
+int SettingsWindow::loadDefaultDeadlineSetting()
 {
-    static QTranslator translator;
+    // Path to the configuration file
+    QString configFilePath = "config.ini";
 
-    // Unload the current translation
-    qApp->removeTranslator(&translator);
-
-    // Load the new translation
-    if (translator.load(":/ToDo_" + language)) {
-        qApp->installTranslator(&translator);
-        qApp->processEvents();
-
-
-    } else {
-        qWarning() << "Could not load translation file for language:" << language;
+    // Check if the configuration file exists
+    if (!QFile::exists(configFilePath)) {
+        // If the file does not exist, create it
+        QFile configFile(configFilePath);
+        if (!configFile.open(QIODevice::WriteOnly)) {
+            qWarning() << "Could not create config file";
+            return 0;  // Return default deadline if config file cannot be created
+        }
+        // Write the default deadline to the configuration file
+        QTextStream out(&configFile);
+        out << "defaultDeadline=0";
+        configFile.close();
     }
+
+    // Open the configuration file
+    QFile configFile(configFilePath);
+    if (!configFile.open(QIODevice::ReadOnly)) {
+        qWarning() << "Could not open config file for reading";
+        return 0;  // Return default deadline if config file does not exist
+    }
+
+    // Read the default deadline from the configuration file
+    QTextStream in(&configFile);
+    int defaultDeadline = 0;
+    QString line;
+    while (in.readLineInto(&line)) {
+        if (line.startsWith("defaultDeadline=")) {
+            QString deadline = line.split("=")[1];
+            defaultDeadline = deadline.toInt();
+            break;
+        }
+    }
+
+    configFile.close();
+
+    qDebug() << "Default deadline setting loaded: " << defaultDeadline;
+
+    return defaultDeadline;
 }
 
-void SettingsWindow::saveLanguageSetting(const QString& language)
+// Function to save the settings
+void SettingsWindow::saveSettings()
+{
+    // Get the selected default deadline from the dropdown
+    QString selectedDefaultDeadlineText = defaultDeadlineDropdown->currentText();
+    int selectedDefaultDeadline = 0;
+    if (selectedDefaultDeadlineText == "Same day") {
+        selectedDefaultDeadline = 0;
+    } else if (selectedDefaultDeadlineText == "In three days") {
+        selectedDefaultDeadline = 3;
+    } else if (selectedDefaultDeadlineText == "In one week") {
+        selectedDefaultDeadline = 7;
+    }
+    // Save the selected default deadline
+    saveDefaultDeadlineSetting(selectedDefaultDeadline);
+
+    // Reload the application
+    reloadApplication();
+}
+
+// Function to save the selected default deadline
+void SettingsWindow::saveDefaultDeadlineSetting(int defaultDeadline)
 {
     // Open the configuration file
     QFile configFile("config.ini");
@@ -164,49 +210,17 @@ void SettingsWindow::saveLanguageSetting(const QString& language)
         return;
     }
 
-    // Write the selected language to the configuration file
+    // Write the selected default deadline to the configuration file
     QTextStream out(&configFile);
-    out << "language=" << language;
+    out << "defaultDeadline=" << defaultDeadline;
 
+    // Close the configuration file
     configFile.close();
 
-    qDebug() << "Language setting saved";
+    qDebug() << "Default deadline setting saved";
 }
 
-QString SettingsWindow::loadLanguageSetting()
-{
-    // Open the configuration file
-    QFile configFile("config.ini");
-    if (!configFile.open(QIODevice::ReadOnly)) {
-        qWarning("Could not open config file for reading");
-        return "en_EN";  // Return default language if config file does not exist
-    }
-
-    // Read the selected language from the configuration file
-    QTextStream in(&configFile);
-    QString language = in.readLine().split("=")[1];
-
-    configFile.close();
-
-    qDebug() << "Language setting loaded: " << language;
-    return language;
-}
-
-void SettingsWindow::saveSettings()
-{
-    // Get the selected language from the dropdown
-    QString selectedLanguage = languageDropdown->currentText();
-
-    // Save the selected language
-    saveLanguageSetting(selectedLanguage);
-
-    // Change the language
-    changeLanguage(selectedLanguage);
-
-    // Reload the application
-    reloadApplication();
-}
-
+// Function to reload the application
 void SettingsWindow::reloadApplication()
 {
     this->update();

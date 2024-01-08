@@ -17,6 +17,7 @@ DatabaseManager::DatabaseManager(const QString &databasePath)
     db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(databasePath);
 
+    // Check if the database connection is open
     if (!db.open())
     {
         qDebug() << "Error: connection with database fail";
@@ -26,6 +27,7 @@ DatabaseManager::DatabaseManager(const QString &databasePath)
         qDebug() << "Database: connection ok";
     }
 
+    // Create a database manager
     auto manager = DB::create({
         {"driver",                  "QSQLITE"},
         {"database",                databasePath},
@@ -38,8 +40,10 @@ DatabaseManager::DatabaseManager(const QString &databasePath)
     });
 }
 
+// Close the database connection
 DatabaseManager::~DatabaseManager()
 {
+    // Check if the database connection is open
     if (db.isOpen())
     {
         db.close();

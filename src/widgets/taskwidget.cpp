@@ -6,28 +6,31 @@
 #include "database/models/task.h"
 
 #include <QLabel>
-#include <QVBoxLayout>
 #include <QCheckBox>
-#include <QPushButton>
 #include <QScrollArea>
 #include <QDateEdit>
 #include <QInputDialog>
 #include <database/models/list.h>
+#include <windows/settingswindow.h>
 
 
 TaskWidget::TaskWidget(QWidget* parent) : QWidget(parent)
 {
+    // Create a main widget
     auto* mainWidget = new QWidget(this);
     mainWidget->setStyleSheet("background-color: #ffffff;");
-    mainWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);  // Set policy to expanding
+    mainWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
+    // Create a task list widget
     taskListWidget = new QListWidget(this);
     taskListWidget->setLayout(new QVBoxLayout());
     taskListWidget->setFrameShape(QFrame::NoFrame);
 
+    // Create a main layout for the main widget
     auto* mainLayout = new QVBoxLayout(mainWidget);
     mainLayout->setContentsMargins(0, 0, 0, 0);
 
+    // Create a header widget and add it to the main layout
     QWidget* headerWidget = createHeaderWidget();
     mainLayout->addWidget(headerWidget);
     mainLayout->addSpacing(21);
@@ -35,15 +38,19 @@ TaskWidget::TaskWidget(QWidget* parent) : QWidget(parent)
     // Add the task list widget to the layout right after the header widget
     mainLayout->addWidget(taskListWidget);
 
+    // Set the current list ID to 1 (Inbox)
     refreshTaskList(1);
 
+    // Add the main widget to the parent widget
     parent->layout()->addWidget(mainWidget);
 }
 
+// Destructor for the task widget
 TaskWidget::~TaskWidget()
 {
 }
 
+// Function creates a header widget for the task widget
 QWidget* TaskWidget::createHeaderWidget()
 {
     // Create a header widget
@@ -78,6 +85,7 @@ QWidget* TaskWidget::createHeaderWidget()
     return headerWidget;
 }
 
+// Function updates the task list widget with the given tasks
 void TaskWidget::updateTaskList(const QVector<Task>& tasks)
 {
     // Remove all items from the task list widget
@@ -121,6 +129,7 @@ void TaskWidget::updateTaskList(const QVector<Task>& tasks)
     taskListWidget->layout()->activate();
 }
 
+// Function refreshes the task list widget with the tasks for the given list ID
 void TaskWidget::refreshTaskList(int listId)
 {
     // Check if the list exists
@@ -154,11 +163,13 @@ void TaskWidget::refreshTaskList(int listId)
     updateTaskList(tasks);
 }
 
+// Function shows all tasks for today
 void TaskWidget::showTasksForToday()
 {
     // Get today's date
     QDate today = QDate::currentDate();
 
+    // Set the current list ID to -1 (Today)
     setCurrentListId(-1);
 
     // Get all tasks
@@ -185,12 +196,15 @@ void TaskWidget::showTasksForToday()
     setListName("Today");
 }
 
+// Function handles the return pressed signal from the line edit
 void TaskWidget::returnPressed()
 {
+    // Get the task name from the line edit
     qDebug() << "Return pressed";
     QString taskName = addTaskLineEdit->text();
     qDebug() << "Task name";
 
+    // Check if the task name is empty
     if (!taskName.trimmed().isEmpty()) {
         // Get the current list ID
         int listId = getCurrentListId();
@@ -202,8 +216,15 @@ void TaskWidget::returnPressed()
         // If the list ID is -1, set it to 1 (Inbox)
         task.list_id = listId == -1 ? 1 : listId;
 
-        // Refresh the task list
-        refreshTaskList(task.list_id);
+        // Get the default deadline from the settings
+        SettingsWindow settings;
+        int defaultDeadlineDays = settings.loadDefaultDeadlineSetting();
+
+        // Get the current date and add the default deadline
+        QDate currentDate = QDate::currentDate();
+        QDate deadlineDate = currentDate.addDays(defaultDeadlineDays);
+        // Set the task deadline to the default deadline
+        task.deadline = deadlineDate.toString("yyyy-MM-dd").toStdString();
 
         // Save the task in the database
         task.save();
@@ -218,11 +239,14 @@ void TaskWidget::returnPressed()
     qDebug() << "Line edit cleared";
 }
 
+// Function shows all tasks for the given list ID
 QWidget* TaskWidget::showTasksForListId(int listId)
 {
+    // Create a container widget for the task list
     auto* containerWidget = new QWidget(this);
     auto* layout = new QVBoxLayout(containerWidget);
 
+    // Get all tasks for the given list ID
     QVector<Task> tasks = Task::getTasksByListId(listId);
     for (const Task& task : tasks)
     {
@@ -230,11 +254,13 @@ QWidget* TaskWidget::showTasksForListId(int listId)
         layout->addWidget(taskWidget);
     }
 
+    // Set the current list ID
     setCurrentListId(listId);
 
     return containerWidget;
 }
 
+// Function creates a task widget for the given task
 QWidget* TaskWidget::createTaskWidget(const Task& task)
 {
     // Create a new widget for the task
@@ -328,15 +354,18 @@ QWidget* TaskWidget::createTaskWidget(const Task& task)
     return taskWidget;
 }
 
+// Function sets the task widget for the list widget
 void TaskWidget::setListName(const QString& listName)
 {
     headerLabel->setText(listName);
 }
 
+// Function sets the current list ID
 void TaskWidget::setCurrentListId(int listId) {
     currentListId = listId;
 }
 
+// Function returns the current list ID
 int TaskWidget::getCurrentListId() const {
     return currentListId;
 }

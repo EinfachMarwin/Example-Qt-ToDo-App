@@ -6,16 +6,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QFrame>
 #include <QLabel>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QSpacerItem>
-#include <QPixmap>
-#include <QIcon>
 #include <QApplication>
-#include <QSplitter>
 
 #include <QDesktopServices>
 
@@ -31,8 +23,6 @@ public slots:
     static void onSettingsButtonClicked();
     static void onHelpButtonClicked();
     static void onTasksButtonClicked();
-
-private:
 };
 
 #endif // MAINWINDOW_H
